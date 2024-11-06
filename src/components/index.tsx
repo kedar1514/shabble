@@ -1,9 +1,13 @@
-import Icons from "./ui/icon/Icons";
-import Title from "./ui/title/Title";
-import Tile from "./ui/tile/Tile";
+import Icons from "./ui/icon/icons";
+import Title from "./ui/title/title";
+import Tile from "./ui/tile/tile";
+import Board from "./ui/board/board";
+import Button from "./ui/button/button";
 
 export {
     Icons,
     Title,
-    Tile
+    Tile,
+    Board,
+    Button
 }

@@ -11,6 +11,7 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         "gray-medium": "#edeff1",
+        "green-medium": "#6fb05c",
       },
       fontFamily: {
         sans: ['Nunito', 'sans-serif'],

@@ -1,0 +1,1 @@
+export const API_DAILY_PUZZLE = '/api/daily';

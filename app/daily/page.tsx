@@ -1,5 +1,5 @@
 import React from 'react'
-import Daily from '@/components/daily/Daily'
+import Daily from '@/components/daily/daily'
 
 
 function DailyPage() {
