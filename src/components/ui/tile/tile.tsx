@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { tv } from 'tailwind-variants'
 
 interface TileProps {
   className?: string;
   tileContent?: string;
+  guessContent?: string;
   onClick?: () => void;
   guessMode?: boolean;
-  showIncorrect?: boolean;
+  incorrectGuess?: boolean;
 }
 
 const tile = tv({
@@ -17,7 +18,7 @@ const tile = tv({
       "tile-filled": "bg-yellow-medium",
       "guess-empty": "bg-green-light",
       "guess-filled": "bg-green-medium",
-      "guess-incorrect": "bg-red-600"
+      "guess-incorrect": "bg-red-600 animate-shake"
     }
   },
   defaultVariants: {
@@ -25,15 +26,13 @@ const tile = tv({
   }
 })
 
-function Tile({ className, tileContent, onClick, guessMode, showIncorrect }: TileProps) {
-
-
+function Tile({ className, tileContent, guessContent, onClick, guessMode, incorrectGuess }: TileProps) {
   return (
     <div
       onClick={onClick}
       className={tile({
-        status: showIncorrect ? "guess-incorrect" : guessMode
-          ? (tileContent ? "guess-filled" : "guess-empty")
+        status: incorrectGuess && guessContent ? "guess-incorrect" : guessMode
+          ? (guessContent ? "guess-filled" : "guess-empty")
           : (tileContent ? "tile-filled" : "tile-empty"),
         className
       })}

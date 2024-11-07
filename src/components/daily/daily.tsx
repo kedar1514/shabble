@@ -16,7 +16,7 @@ function Daily() {
     const [guess, setGuess] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost">("playing");
     const [guessTileCount, setGuessTileCount] = useState<number>(0);
-    const [showIncorrect, setShowIncorrect] = useState<boolean>(false);
+    const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
 
     if (attempts < 0 && gameStatus === "playing") {
         setGameStatus("lost");
@@ -86,13 +86,13 @@ function Daily() {
                     setBoard(shape);
                     break;
                 }
-                setShowIncorrect(true);
+                setIncorrectGuess(true);
                 setTimeout(() => {
-                    setShowIncorrect(false);
-                }, 2000);
+                    setIncorrectGuess(false);
+                    setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
+                    setGuessTileCount(0);
+                }, 1000);
                 setAttempts(prevAttempts => prevAttempts - 1);
-                setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
-                setGuessTileCount(0);
                 if (attempts <= 0) {
                     setGameStatus("lost");
                 }
@@ -117,10 +117,11 @@ function Daily() {
             </nav>
             <div className='flex flex-col items-center justify-center w-full h-full space-y-4'>
                 <Board
-                    board={gameStatus === "guessing" ? guess : board}
+                    board={board}
+                    guess={guess}
                     onTileClick={handleTileClick}
                     guessMode={gameStatus === "guessing"}
-                    showIncorrect={showIncorrect}
+                    incorrectGuess={incorrectGuess}
                 />
                 <Button
                     onClick={handleSubmitButton}
@@ -130,7 +131,7 @@ function Daily() {
                     {gameStatus === "won" || gameStatus === "lost" ? 'PLAY AGAIN' : gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
                 </Button>
 
-                {gameStatus === "playing" && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
+                {(gameStatus === "playing" || gameStatus === "guessing") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
                 {gameStatus === "won" && <p className='text-black font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
                 {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
             </div>

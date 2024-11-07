@@ -3,12 +3,13 @@ import React from 'react'
 
 interface BoardProps {
     board: string[][];
+    guess: string[][];
     onTileClick?: (x: number, y: number) => void;
     guessMode?: boolean;
-    showIncorrect?: boolean;
+    incorrectGuess?: boolean;
 }
 
-function Board({ board, onTileClick, guessMode, showIncorrect }: BoardProps) {
+function Board({ board, guess, onTileClick, guessMode, incorrectGuess }: BoardProps) {
 
     const boardSize = board.length;
     // console.log("board inside board", board);
@@ -23,9 +24,10 @@ function Board({ board, onTileClick, guessMode, showIncorrect }: BoardProps) {
                         <React.Fragment key={col}>
                             <Tile 
                                 tileContent={board[row][col]} 
+                                guessContent={guess[row][col]}
                                 onClick={() => onTileClick && onTileClick(row, col)}
                                 guessMode={guessMode}
-                                showIncorrect={showIncorrect}
+                                incorrectGuess={incorrectGuess}
                             />
                         </React.Fragment>
                     ))}
