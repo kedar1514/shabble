@@ -3,9 +3,12 @@ import React from 'react'
 
 interface BoardProps {
     board: string[][];
+    onTileClick?: (x: number, y: number) => void;
+    guessMode?: boolean;
+    showIncorrect?: boolean;
 }
 
-function Board({ board }: BoardProps) {
+function Board({ board, onTileClick, guessMode, showIncorrect }: BoardProps) {
 
     const boardSize = board.length;
     // console.log("board inside board", board);
@@ -13,12 +16,17 @@ function Board({ board }: BoardProps) {
     
     
     return (
-        <div className='flex flex-col items-center justify-around w-[440px] h-[440px]'>
+        <div className='flex flex-col items-center justify-around'>
             {Array.from({ length: boardSize }, (_, row) => (
                 <div key={row} className='flex w-full items-center justify-around'>
                     {Array.from({ length: boardSize }, (_, col) => (
                         <React.Fragment key={col}>
-                            <Tile tileContent={board[row][col]} />
+                            <Tile 
+                                tileContent={board[row][col]} 
+                                onClick={() => onTileClick && onTileClick(row, col)}
+                                guessMode={guessMode}
+                                showIncorrect={showIncorrect}
+                            />
                         </React.Fragment>
                     ))}
                 </div>
