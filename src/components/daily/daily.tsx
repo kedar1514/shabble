@@ -9,7 +9,7 @@ import { checkGuess, getAdjacentCount } from '@/services/puzzle';
 
 function Daily() {
 
-    const [boardSize, setBoardSize] = useState<number>(6);
+    const [boardSize] = useState<number>(6);
     const [attempts, setAttempts] = useState<number>(15);
     const [board, setBoard] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [shape, setShape] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
