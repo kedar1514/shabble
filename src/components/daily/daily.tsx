@@ -127,7 +127,7 @@ function Daily() {
                     onTileClick={handleTileClick}
                     guessMode={gameStatus === "guessing"}
                     incorrectGuess={incorrectGuess}
-                    className='w-[70%]'
+                    className='!w-[70%]'
                 />
                 <Button
                     onClick={handleSubmitButton}
