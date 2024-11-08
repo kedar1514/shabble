@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icons, Title, Divider, Text } from '@/components';
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { instructions } from '@/constants/help/instructions';
+import { instructions } from '@/constants';
 
 interface HelpProps {
   setShowHelp: (showHelp: boolean) => void;
@@ -13,8 +13,8 @@ function Help({ setShowHelp }: HelpProps) {
       className='absolute inset-0 w-full h-full flex justify-center items-center'
     >
       <div className='bg-gray-300 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
-      <div className='max-w-[730px] w-full h-full animate-slide-up  border-t border-gray-light'>
-        <div className='h-[72px] opacity-0' />
+      <div className='max-w-[730px] w-full h-full animate-slide-up border-t border-gray-light'>
+        <div className='h-[72px] opacity-0 debug' onClick={() => setShowHelp(false)} />
         <div className='h-[calc(100%-72px)] bg-white'>
 
           <nav className='relative flex items-center w-full h-[72px]'>
@@ -32,13 +32,13 @@ function Help({ setShowHelp }: HelpProps) {
           </nav>
           <Divider isVertical={false} className='mb-4' />
 
-          <div className='flex flex-col overflow-y-auto h-[calc(100%-144px)] w-full hide-scrollbar px-8'>
+          <div className='flex flex-col overflow-y-auto h-[calc(100%-100px)] w-full hide-scrollbar px-8'>
             {instructions.map((section, sectionIndex) => (
               <section className='flex flex-col justify-center gap-4 w-full' key={sectionIndex}>
                 {section.map((text, textIndex) => (
                   <Text key={textIndex}>{text}</Text>
                 ))}
-                {sectionIndex < instructions.length - 1 && <Divider isVertical={false} className='my-4' />}
+                <Divider isVertical={false} className='my-4' />
               </section>
             ))}
           </div>

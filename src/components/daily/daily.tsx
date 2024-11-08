@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
-import { Icons, Title, Board, Button } from '@/components';
+import { Icons, Title, Board, Button, Text } from '@/components';
 import { getDailyPuzzle } from '@/api/daily-api';
 import { checkGuess, getAdjacentCount } from '@/services/puzzle';
 import Help from './help'
@@ -96,7 +96,7 @@ function Daily() {
                     setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
                     setGuessTileCount(0);
                 }, 1000);
-                setAttempts(prevAttempts => prevAttempts - 1);
+                setAttempts(prevAttempts => prevAttempts - 2);
                 if (attempts <= 0) {
                     setGameStatus("lost");
                 }
@@ -126,6 +126,9 @@ function Daily() {
             <div className='flex flex-col items-center w-full h-full overflow-auto hide-scrollbar'>
                 <div className='flex-1 w-full h-full'></div>
                 <div className='flex flex-col items-center w-full space-y-4'>
+                    <Text className='!text-base md:!text-2xl text-gray-400'>
+                        {gameStatus === "guessing" ? `${guessTileCount}/${boardSize} TILES OF HIDDEN SHAPE SELECTED` : "CLICK ANY TILE TO GET A HINT"}
+                    </Text>
                     <Board
                         board={board}
                         guess={guess}
@@ -138,7 +141,7 @@ function Daily() {
                         {gameStatus === "guessing" &&
                             <Button
                                 onClick={() => setGameStatus("playing")}
-                                className=' h-[48px] md:h-[64px] bg-yellow-medium font-bold text-xl md:text-2xl'
+                                className=' h-[48px] md:h-[64px] bg-yellow-400 font-bold text-xl md:text-2xl'
                             >
                                 GO BACK
                             </Button>
@@ -146,14 +149,14 @@ function Daily() {
                         <Button
                             onClick={handleSubmitButton}
                             disabled={gameStatus === "guessing" && guessTileCount !== boardSize}
-                            className='h-[48px] md:h-[64px] bg-green-medium font-bold text-xl md:text-2xl'
+                            className='h-[48px] md:h-[64px] bg-green-600 font-bold text-xl md:text-2xl'
                         >
                             {gameStatus === "won" || gameStatus === "lost" ? 'PLAY AGAIN' : gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
                         </Button>
                     </div>
 
                     {(gameStatus === "playing" || gameStatus === "guessing") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
-                    {gameStatus === "won" && <p className='text-green-medium font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
+                    {gameStatus === "won" && <p className='text-green-600 font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
                     {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
                 </div>
                 <div className='flex-1 w-full h-full'></div>

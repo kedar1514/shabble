@@ -12,7 +12,7 @@ function Button({ className, children, onClick, disabled }: ButtonProps) {
         <button
             onClick={onClick}
             disabled={disabled}
-            className={`${className} flex items-center justify-center w-full h-[48px] rounded-[10px] bg-black text-white disabled:bg-gray-medium disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`${className} flex items-center justify-center w-full h-[48px] rounded-[10px] bg-black text-white disabled:bg-gray-500 disabled:opacity-20 disabled:cursor-not-allowed`}
         >
             {children}
         </button>

@@ -79,7 +79,7 @@ export const instructions: readonly (string | JSX.Element)[][] = [
                             gameStatus="guessing"
                             incorrectGuess={false}
                             className='!gap-0.5'
-                            tileClassName='!rounded'
+                            tileClassName='!rounded !cursor-default'
                         />
                         <div className='text-sm'>{shape.length} x {shape[0].length}</div>
                     </div>
@@ -103,14 +103,15 @@ export const instructions: readonly (string | JSX.Element)[][] = [
                         gameStatus={index === 0 ? "playing" : "guessing"}
                         incorrectGuess={false}
                         className='!w-[40%] md:!w-[20%] !gap-0.5'
-                        tileClassName='!rounded !text-base'
+                        tileClassName='!rounded !text-base !cursor-default'
                     />
                 ))}
             </div>
         </>
     ],
     [
-        "Any click on a tile or input of a guess will consume 1 attempt.",
+        "Taking a hint will consume 1 attempt.",
+        "Guessing a shape will consume 2 attempts.",
         <>
             <p className='text-black font-bold text-xl md:text-2xl text-center'>10 <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>
         </>,
@@ -120,10 +121,13 @@ export const instructions: readonly (string | JSX.Element)[][] = [
     ],
     [
         <>
-            Made with ❤️ by <a href="https://github.com/coder-zs-cse/" className='text-green-medium font-bold'>Zubin Shah</a>
+            Inspired from <a href="https://wafflegame.net/daily" className='text-green-600 font-bold'>Waffle</a> and <a href="https://minesweeper.online/" className='text-green-600 font-bold'>Minesweeper</a>
         </>,
         <>
-            Inspired from <a href="https://wafflegame.net/daily" className='text-green-medium font-bold'>Waffle</a> and <a href="https://minesweeper.online/" className='text-green-medium font-bold'>Minesweeper</a>
+            Made with ❤️ by <a href="https://github.com/coder-zs-cse/" className='text-green-600 font-bold'>Zubin Shah</a>
+        </>,
+        <>
+            Buy me a <a href="https://getmechai.vercel.app/link.html?vpa=www.zubinshah1886@okaxis&nm=ZubinShah&amt=100" className='text-green-600 font-bold'>{" "}chai ☕</a>
         </>
     ]
 ] as const;

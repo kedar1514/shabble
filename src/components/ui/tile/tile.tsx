@@ -11,15 +11,15 @@ interface TileProps {
 }
 
 const tile = tv({
-  base: "flex items-center justify-center rounded-md md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white",
+  base: "flex items-center justify-center rounded-md md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white shadow-[inset_0_-4px_0_rgba(0,0,0,0.05)]",
   variants: {
     status: {
-      "tile-empty": "bg-gray-medium",
-      "tile-filled": "bg-yellow-medium",
-      "guess-empty": "bg-green-light",
-      "guess-filled": "bg-green-medium",
+      "tile-empty": "bg-gray-200",
+      "tile-filled": "bg-yellow-400",
+      "guess-empty": "bg-green-200",
+      "guess-filled": "bg-green-600",
       "guess-incorrect": "bg-red-600 animate-shake",
-      "won": "animate-rainbow bg-green-medium"
+      "won": "animate-rainbow bg-green-600"
     }
   },
   defaultVariants: {
@@ -42,7 +42,7 @@ function Tile({ className, tileContent, guessContent, onClick, gameStatus, incor
         className
       })}
     >
-      {gameStatus === "won" && guessContent ? '•' : ''}
+      {gameStatus === "won" && guessContent ? 'x' : ''}
       {gameStatus === "playing" && tileContent ? tileContent : ''}
     </div>
   )
