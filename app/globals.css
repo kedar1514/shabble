@@ -14,6 +14,9 @@
 }
 
 
+
+
+
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -25,6 +28,25 @@
 .animate-shake {
   animation: shake 0.25s;
   animation-iteration-count: 2;
+}
+
+
+
+
+@keyframes slide-up {
+  0% { transform: translateY(50%); }
+  100% { transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .debug {

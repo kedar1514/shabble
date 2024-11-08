@@ -18,7 +18,7 @@ function Daily() {
     const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost">("playing");
     const [guessTileCount, setGuessTileCount] = useState<number>(0);
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
-    const [showHelp, setShowHelp] = useState<boolean>(false);
+    const [showHelp, setShowHelp] = useState<boolean>(true);
 
     if (attempts < 0 && gameStatus === "playing") {
         setGameStatus("lost");
@@ -107,7 +107,7 @@ function Daily() {
     }
 
     return (
-        <div className='flex flex-col items-center w-full h-full px-2'>
+        <div className='flex flex-col items-center w-full h-full p-2'>
             {showHelp && <Help setShowHelp={setShowHelp} />}
             <nav className='flex items-center justify-around w-full h-[72px]'>
                 <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />

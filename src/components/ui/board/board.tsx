@@ -19,7 +19,7 @@ function Board({ board, guess, onTileClick, guessMode, incorrectGuess, className
     
     
     return (
-        <div className={`${className} w-full grid grid-cols-${boardSize} grid-rows-${boardSize} gap-1 md:gap-2 aspect-square`}>
+        <div className={` w-full grid grid-cols-${boardSize} grid-rows-${boardSize} gap-1 md:gap-2 aspect-square ${className}`}>
             {Array.from({ length: boardSize }, (_, row) => (
                 Array.from({ length: boardSize }, (_, col) => (
                     <Tile 

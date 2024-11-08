@@ -1,40 +1,41 @@
 import { Board } from '@/components';
 import React from 'react';
 
-const guess1: string[][] = [
-    ["", "", "", "", "", ""],
-    ["", "", "", "", "", ""],
-    ["", "X", "X", "X", "X", ""],
-    ["", "", "X", "X", "", ""],
-    ["", "", "", "", "", ""],
-    ["", "", "", "", "", ""]
-]
 
-const guess2: string[][] = [
-    ["", "", "", "", "X", ""],
-    ["", "", "", "X", "X", ""],
-    ["", "", "", "X", "", ""],
-    ["", "", "X", "X", "", ""],
-    ["", "", "", "", "", ""],
-    ["", "", "", "", "", ""]
-]
+const guesses: string[][][] = [
+    [
+        ["", "", "", "", ""],
+        ["", "", "", "", ""],
+        ["X", "X", "X", "", ""],
+        ["", "", "X", "X", ""],
+        ["", "", "", "", ""]
+    ],
+    [
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "X", "X", "X", "X", ""],
+        ["", "", "X", "X", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""]
+    ],
+    [
+        ["", "", "", "", "X", ""],
+        ["", "", "", "X", "X", ""],
+        ["", "", "", "X", "", ""],
+        ["", "", "X", "X", "", ""],
+        ["", "", "", "", "", ""],
+        ["", "", "", "", "", ""]
+    ],
+    [
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "X", "", ""],
+        ["", "", "X", "", "X", "", ""],
+        ["", "", "X", "X", "X", "X", ""]
+    ],
 
-const guess3: string[][] = [
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["X", "X", "X", "", ""],
-    ["", "", "X", "X", ""],
-    ["", "", "", "", ""]
-]
-
-const guess4: string[][] = [
-    ["", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", ""],
-    ["", "", "", "", "X", "", ""],
-    ["", "", "X", "", "X", "", ""],
-    ["", "", "X", "X", "X", "X", ""]
 ]
 
 export const instructions: readonly (string | JSX.Element)[][] = [
@@ -52,47 +53,28 @@ export const instructions: readonly (string | JSX.Element)[][] = [
             The hidden shape is a continuous block of tiles.
         </>,
         <>
-            <div className='flex justify-between'>
-                <Board
-                    board={guess1}
-                    guess={guess1}
-                    onTileClick={() => { }}
-                    guessMode={true}
-                    incorrectGuess={false}
-                    className='w-[20%] !gap-0.5'
-                    tileClassName='!rounded'
-                />
-                <Board
-                    board={guess2}
-                    guess={guess2}
-                    onTileClick={() => { }}
-                    guessMode={true}
-                    incorrectGuess={false}
-                    className='w-[20%] !gap-0.5'
-                    tileClassName='!rounded'
-                />
-                <Board
-                    board={guess3}
-                    guess={guess3}
-                    onTileClick={() => { }}
-                    guessMode={true}
-                    incorrectGuess={false}
-                    className='w-[20%] !gap-0.5'
-                    tileClassName='!rounded'
-                />
-                 <Board
-                    board={guess4}
-                    guess={guess4}
-                    onTileClick={() => { }}
-                    guessMode={true}
-                    incorrectGuess={false}
-                    className='w-[20%] !gap-0.5'
-                    tileClassName='!rounded'
-                />
+            <div className='flex flex-wrap justify-around gap-4'>
+                {guesses.map((guess, index) => (
+                    <React.Fragment key={index}>
+                        <div className='flex flex-col items-center gap-2 !w-[40%] md:!w-[20%]  h-full'>
+                            <Board
+                                key={index}
+                                board={guess}
+                                guess={guess}
+                                onTileClick={() => { }}
+                                guessMode={true}
+                                incorrectGuess={false}
+                                className='!gap-0.5'
+                                tileClassName='!rounded'
+                            />
+                            <div className='text-sm'>{guess.length} x {guess[0].length}</div>
+                        </div>
+                    </React.Fragment>
+                ))}
             </div>
         </>,
         <>
-            The number of tiles in the hidden shape is equal to the length of the side of the board.
+            The number of tiles in the hidden shape is equal to the length of the board.
         </>
     ],
     [
