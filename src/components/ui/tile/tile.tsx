@@ -6,19 +6,20 @@ interface TileProps {
   tileContent?: string;
   guessContent?: string;
   onClick?: () => void;
-  guessMode?: boolean;
+  gameStatus?: string;
   incorrectGuess?: boolean;
 }
 
 const tile = tv({
-  base: "flex items-center justify-center rounded-lg md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white",
+  base: "flex items-center justify-center rounded-md md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white",
   variants: {
     status: {
       "tile-empty": "bg-gray-medium",
       "tile-filled": "bg-yellow-medium",
       "guess-empty": "bg-green-light",
       "guess-filled": "bg-green-medium",
-      "guess-incorrect": "bg-red-600 animate-shake"
+      "guess-incorrect": "bg-red-600 animate-shake",
+      "won": "animate-rainbow bg-green-medium"
     }
   },
   defaultVariants: {
@@ -26,18 +27,23 @@ const tile = tv({
   }
 })
 
-function Tile({ className, tileContent, guessContent, onClick, guessMode, incorrectGuess }: TileProps) {
+function Tile({ className, tileContent, guessContent, onClick, gameStatus, incorrectGuess }: TileProps) {
   return (
     <div
       onClick={onClick}
       className={tile({
-        status: incorrectGuess && guessContent ? "guess-incorrect" : guessMode
-          ? (guessContent ? "guess-filled" : "guess-empty")
-          : (tileContent ? "tile-filled" : "tile-empty"),
+        status: gameStatus === "won" && guessContent
+          ? "won"
+          : incorrectGuess && guessContent 
+            ? "guess-incorrect" 
+            : gameStatus === "guessing"
+              ? (guessContent ? "guess-filled" : "guess-empty")
+              : (tileContent ? "tile-filled" : "tile-empty"),
         className
       })}
     >
-      {!guessMode && tileContent ? tileContent : ''}
+      {gameStatus === "won" && guessContent ? '•' : ''}
+      {gameStatus === "playing" && tileContent ? tileContent : ''}
     </div>
   )
 }

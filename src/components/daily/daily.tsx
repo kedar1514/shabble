@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
-import { Icons, Title, Board, Button } from '@/components';
+import { Icons, Title, Board, Button, Text } from '@/components';
 import { getDailyPuzzle } from '@/api/daily-api';
 import { checkGuess, getAdjacentCount } from '@/services/puzzle';
 import Help from './help'
@@ -36,17 +36,21 @@ function Daily() {
                 setGuess(prevGuess => {
                     const newGuess = [...prevGuess];
                     newGuess[x][y] = '';
+                    console.log("newGuess inside handletileclick", newGuess);
+
                     return newGuess;
                 });
                 setGuessTileCount(prevCount => prevCount - 1);
             }
-            if (guessTileCount >= boardSize) return;
-            setGuess(prevGuess => {
-                const newGuess = [...prevGuess];
-                newGuess[x][y] = 'X';
-                return newGuess;
-            });
-            setGuessTileCount(prevCount => prevCount + 1);
+            else {
+                if (guessTileCount >= boardSize) return;
+                setGuess(prevGuess => {
+                    const newGuess = [...prevGuess];
+                    newGuess[x][y] = 'X';
+                    return newGuess;
+                });
+                setGuessTileCount(prevCount => prevCount + 1);
+            }
         }
         else {
             if (board[x][y] !== '' || attempts <= 0) return;
@@ -109,37 +113,50 @@ function Daily() {
     return (
         <div className='flex flex-col items-center w-full h-full p-2'>
             {showHelp && <Help setShowHelp={setShowHelp} />}
-            <nav className='flex items-center justify-around w-full h-[72px]'>
-                <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
-                <Icons icon={<FaHeart className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
+            <nav className='flex items-center justify-around w-full h-[72px] gap-2'>
+                <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />}/>
+                <Icons icon={<FaHeart className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Title title='SHABBLE' className='flex-1 text-center' />
-                <Icons icon={<MdLeaderboard className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
+                <Icons icon={<MdLeaderboard className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Icons
                     icon={<FaQuestion className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />}
-                    className='mx-2'
                     onClick={() => setShowHelp(!showHelp)}
                 />
             </nav>
-            <div className='flex flex-col items-center justify-center w-full h-full space-y-4'>
-                <Board
-                    board={board}
-                    guess={guess}
-                    onTileClick={handleTileClick}
-                    guessMode={gameStatus === "guessing"}
-                    incorrectGuess={incorrectGuess}
-                    className='!w-[70%]'
-                />
-                <Button
-                    onClick={handleSubmitButton}
-                    disabled={gameStatus === "guessing" && guessTileCount !== boardSize}
-                    className='!w-[70%] h-[48px] md:h-[64px] bg-green-medium font-bold text-xl md:text-2xl'
-                >
-                    {gameStatus === "won" || gameStatus === "lost" ? 'PLAY AGAIN' : gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
-                </Button>
+            <div className='flex flex-col items-center w-full h-full overflow-auto hide-scrollbar'>
+                <div className='flex-1 w-full h-full'></div>
+                <div className='flex flex-col items-center w-full space-y-4'>
+                    <Board
+                        board={board}
+                        guess={guess}
+                        onTileClick={handleTileClick}
+                        gameStatus={gameStatus}
+                        incorrectGuess={incorrectGuess}
+                        className='!w-[80%] md:!w-[70%] mt-20'
+                    />
+                    <div className='flex items-center justify-center space-x-4 w-[80%] md:!w-[70%]'>
+                        {gameStatus === "guessing" &&
+                            <Button
+                                onClick={() => setGameStatus("playing")}
+                                className=' h-[48px] md:h-[64px] bg-yellow-medium font-bold text-xl md:text-2xl'
+                            >
+                                GO BACK
+                            </Button>
+                        }
+                        <Button
+                            onClick={handleSubmitButton}
+                            disabled={gameStatus === "guessing" && guessTileCount !== boardSize}
+                            className='h-[48px] md:h-[64px] bg-green-medium font-bold text-xl md:text-2xl'
+                        >
+                            {gameStatus === "won" || gameStatus === "lost" ? 'PLAY AGAIN' : gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
+                        </Button>
+                    </div>
 
-                {(gameStatus === "playing" || gameStatus === "guessing") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
-                {gameStatus === "won" && <p className='text-black font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
-                {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
+                    {(gameStatus === "playing" || gameStatus === "guessing") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
+                    {gameStatus === "won" && <p className='text-green-medium font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
+                    {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
+                </div>
+                <div className='flex-1 w-full h-full'></div>
             </div>
         </div>
     )

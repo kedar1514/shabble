@@ -2,7 +2,7 @@ import { Board } from '@/components';
 import React from 'react';
 
 
-const guesses: string[][][] = [
+const hiddenShapes: string[][][] = [
     [
         ["", "", "", "", ""],
         ["", "", "", "", ""],
@@ -38,12 +38,28 @@ const guesses: string[][][] = [
 
 ]
 
+const tileBlocks: string[][][] = [
+    [
+        ["", "", "4", "", ""],
+        ["", "", "", "", ""],
+        ["", "3", "", "", ""],
+        ["", "", "", "1", ""],
+        ["0", "", "", "", ""]
+    ],
+    [
+        ["", "", "", "X", ""],
+        ["", "X", "X", "X", ""],
+        ["", "X", "", "X", ""],
+        ["", "", "", "", ""],
+        ["", "", "", "", ""]
+    ]
+]
+
 export const instructions: readonly (string | JSX.Element)[][] = [
     [
         <>
-            Solve the <span className="font-bold">SHABBLE</span> in 10 attempts or fewer.
+            <span className='bg-green-300 text-black py-1'>The Goal is to find the hidden Shape!</span>
         </>,
-        "The goal is to find the hidden shape!",
         <>
             You will earn a star for every attempt you have remaining once the <span className="font-bold">SHABBLE</span> is solved ⭐
         </>
@@ -54,22 +70,19 @@ export const instructions: readonly (string | JSX.Element)[][] = [
         </>,
         <>
             <div className='flex flex-wrap justify-around gap-4'>
-                {guesses.map((guess, index) => (
-                    <React.Fragment key={index}>
-                        <div className='flex flex-col items-center gap-2 !w-[40%] md:!w-[20%]  h-full'>
-                            <Board
-                                key={index}
-                                board={guess}
-                                guess={guess}
-                                onTileClick={() => { }}
-                                guessMode={true}
-                                incorrectGuess={false}
-                                className='!gap-0.5'
-                                tileClassName='!rounded'
-                            />
-                            <div className='text-sm'>{guess.length} x {guess[0].length}</div>
-                        </div>
-                    </React.Fragment>
+                {hiddenShapes.map((shape, index) => (
+                    <div className='flex flex-col items-center gap-2 !w-[40%] md:!w-[20%]  h-full' key={index}>
+                        <Board
+                            board={shape}
+                            guess={shape}
+                            onTileClick={() => { }}
+                            gameStatus="guessing"
+                            incorrectGuess={false}
+                            className='!gap-0.5'
+                            tileClassName='!rounded'
+                        />
+                        <div className='text-sm'>{shape.length} x {shape[0].length}</div>
+                    </div>
                 ))}
             </div>
         </>,
@@ -78,6 +91,39 @@ export const instructions: readonly (string | JSX.Element)[][] = [
         </>
     ],
     [
-        "Clicking on any tile will reveal the number of blocks of shape adjacent to it."
+        "Clicking on any tile will reveal the number of blocks of hidden shape adjacent to it.",
+        <>
+            <div className='flex flex-wrap justify-center gap-4'>
+                {tileBlocks.map((block, index) => (
+                    <Board
+                        key={index}
+                        board={block}
+                        guess={block}
+                        onTileClick={() => { }}
+                        gameStatus={index === 0 ? "playing" : "guessing"}
+                        incorrectGuess={false}
+                        className='!w-[40%] md:!w-[20%] !gap-0.5'
+                        tileClassName='!rounded !text-base'
+                    />
+                ))}
+            </div>
+        </>
+    ],
+    [
+        "Any click on a tile or input of a guess will consume 1 attempt.",
+        <>
+            <p className='text-black font-bold text-xl md:text-2xl text-center'>10 <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>
+        </>,
+        <>
+            Solve the <span className="font-bold">SHABBLE</span> in 10 attempts or fewer.
+        </>,
+    ],
+    [
+        <>
+            Made with ❤️ by <a href="https://github.com/coder-zs-cse/" className='text-green-medium font-bold'>Zubin Shah</a>
+        </>,
+        <>
+            Inspired from <a href="https://wafflegame.net/daily" className='text-green-medium font-bold'>Waffle</a> and <a href="https://minesweeper.online/" className='text-green-medium font-bold'>Minesweeper</a>
+        </>
     ]
 ] as const;

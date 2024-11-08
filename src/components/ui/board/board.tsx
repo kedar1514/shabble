@@ -5,13 +5,13 @@ interface BoardProps {
     board: string[][];
     guess: string[][];
     onTileClick?: (x: number, y: number) => void;
-    guessMode?: boolean;
+    gameStatus?: string;
     incorrectGuess?: boolean;
     className?: string;
     tileClassName?: string;
 }
 
-function Board({ board, guess, onTileClick, guessMode, incorrectGuess, className, tileClassName }: BoardProps) {
+function Board({ board, guess, onTileClick, gameStatus, incorrectGuess, className, tileClassName }: BoardProps) {
 
     const boardSize = board.length;
     // console.log("board inside board", board);
@@ -27,7 +27,7 @@ function Board({ board, guess, onTileClick, guessMode, incorrectGuess, className
                         tileContent={board[row][col]} 
                         guessContent={guess[row][col]}
                         onClick={() => onTileClick && onTileClick(row, col)}
-                        guessMode={guessMode}
+                        gameStatus={gameStatus}
                         incorrectGuess={incorrectGuess}
                         className={tileClassName}
                     />
