@@ -6,6 +6,7 @@ import { MdLeaderboard } from "react-icons/md";
 import { Icons, Title, Board, Button } from '@/components';
 import { getDailyPuzzle } from '@/api/daily-api';
 import { checkGuess, getAdjacentCount } from '@/services/puzzle';
+import Help from './help'
 
 function Daily() {
 
@@ -17,6 +18,7 @@ function Daily() {
     const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost">("playing");
     const [guessTileCount, setGuessTileCount] = useState<number>(0);
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
+    const [showHelp, setShowHelp] = useState<boolean>(false);
 
     if (attempts < 0 && gameStatus === "playing") {
         setGameStatus("lost");
@@ -29,8 +31,6 @@ function Daily() {
 
 
     const handleTileClick = (x: number, y: number) => {
-        // console.log("x", x);
-        // console.log("y", y);
         if (gameStatus === "guessing") {
             if (guess[x][y] !== '') {
                 setGuess(prevGuess => {
@@ -108,12 +108,17 @@ function Daily() {
 
     return (
         <div className='flex flex-col items-center w-full h-full px-2'>
+            {showHelp && <Help setShowHelp={setShowHelp} />}
             <nav className='flex items-center justify-around w-full h-[72px]'>
                 <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
                 <Icons icon={<FaHeart className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
                 <Title title='SHABBLE' className='flex-1 text-center' />
                 <Icons icon={<MdLeaderboard className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
-                <Icons icon={<FaQuestion className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} className='mx-2' />
+                <Icons
+                    icon={<FaQuestion className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />}
+                    className='mx-2'
+                    onClick={() => setShowHelp(!showHelp)}
+                />
             </nav>
             <div className='flex flex-col items-center justify-center w-full h-full space-y-4'>
                 <Board
@@ -122,11 +127,12 @@ function Daily() {
                     onTileClick={handleTileClick}
                     guessMode={gameStatus === "guessing"}
                     incorrectGuess={incorrectGuess}
+                    className='w-[70%]'
                 />
                 <Button
                     onClick={handleSubmitButton}
                     disabled={gameStatus === "guessing" && guessTileCount !== boardSize}
-                    className='!w-[264px] md:!w-[552px] !h-[48px] md:!h-[64px] !bg-green-medium font-bold text-xl md:text-2xl'
+                    className='!w-[70%] h-[48px] md:h-[64px] bg-green-medium font-bold text-xl md:text-2xl'
                 >
                     {gameStatus === "won" || gameStatus === "lost" ? 'PLAY AGAIN' : gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
                 </Button>
