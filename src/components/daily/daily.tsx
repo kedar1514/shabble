@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
-import { Icons, Title, Board, Button, Text } from '@/components';
+import { Icons, Title, Board, Button } from '@/components';
 import { getDailyPuzzle } from '@/api/daily-api';
 import { checkGuess, getAdjacentCount } from '@/services/puzzle';
 import Help from './help'
