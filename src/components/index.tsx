@@ -7,6 +7,7 @@ import Divider from "./ui/divider/divider";
 import Text from "./ui/text/text";
 import Loader from "./ui/loader/loader";
 import TileLoader from "./ui/loader/tile-loader";
+import Confetti from "./ui/confetti/confetti"
 
 export {
     Icons,
@@ -17,5 +18,6 @@ export {
     Divider,    
     Text,
     Loader,
-    TileLoader
+    TileLoader,
+    Confetti
 }

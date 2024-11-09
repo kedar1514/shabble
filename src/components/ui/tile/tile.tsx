@@ -55,7 +55,7 @@ function Tile({ className, tileContent, guessContent, onClick, gameStatus, incor
         className
       })}
     >
-      {gameStatus === "won" && guessContent ? 'x' : ''}
+      {gameStatus === "won" && guessContent ? '✓' : ''}
       {gameStatus === "playing" && tileContent ? tileContent : ''}
       {isLoading && <TileLoader />}
     </div>
