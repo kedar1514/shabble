@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
-export async function PUT() {
+export async function PUT(): Promise<NextResponse> {
     try {
         const userId = crypto.randomUUID();
         await prisma.user.create({

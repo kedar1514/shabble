@@ -15,7 +15,7 @@ datasource db {
 
 model DailyPuzzle {
   id        Int      @id @default(autoincrement())
-  date      DateTime @unique
+  date      DateTime @unique @db.Date
   board     Json
   boardSize Int
   createdAt DateTime @default(now())
@@ -30,7 +30,7 @@ model User {
 model UserProgress {
     id         Int      @id @default(autoincrement())
     userId     String
-    puzzleDate DateTime
+    puzzleDate DateTime @db.Date
     completed  Boolean  @default(false)
     moves      Int      @default(0)
     createdAt  DateTime @default(now())

@@ -1,4 +1,8 @@
-export async function fetchBoard(boardSize: number) {
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export async function fetchBoard(boardSize: number): Promise<{ x: number, y: number }[]> {
     const randomCoordinates: { x: number, y: number }[] = [];
     
     // Start with a random position
@@ -41,15 +45,39 @@ export async function fetchBoard(boardSize: number) {
         }
     }
 
-    const board = Array.from({ length: boardSize }, (_, row) =>
-        Array.from({ length: boardSize }, (_, col) =>
-            randomCoordinates.some(({ x, y }) => x === row && y === col) ? 'X' : ''
-        )
-    );
-    return board;
+    // const board = Array.from({ length: boardSize }, (_, row) =>
+    //     Array.from({ length: boardSize }, (_, col) =>
+    //         randomCoordinates.some(({ x, y }) => x === row && y === col) ? 'X' : ''
+    //     )
+    // );
+    return randomCoordinates;
 }
 
-export function getAdjacentCount(board: string[][], x: number, y: number) {
+export async function getCurrentBoard(currentDate: string, boardSize: number): Promise<{ x: number, y: number }[]> {
+    try {
+        const puzzleDate = new Date(currentDate);
+        let dailyPuzzle = await prisma.dailyPuzzle.findUnique({
+            where: {
+                date: puzzleDate
+            }
+        });
+        if (!dailyPuzzle) {
+            const board = await fetchBoard(boardSize);
+            dailyPuzzle = await prisma.dailyPuzzle.create({
+                data: {
+                    date: puzzleDate,
+                    board,
+                    boardSize
+                }
+            });
+        }
+        return dailyPuzzle.board as { x: number, y: number }[];
+    } catch (error) {
+        console.error("Error fetching current board:", error);
+        throw error;
+    }
+}
+export function getAdjacentCount(board: { x: number, y: number }[], boardSize: number, x: number, y: number): number {
     let adjacentCount = 0;
     const directions = [
         { x: -1, y: 0 },
@@ -66,13 +94,39 @@ export function getAdjacentCount(board: string[][], x: number, y: number) {
     directions.forEach(({ x: dx, y: dy }) => {
         const newX = x + dx;
         const newY = y + dy;
-        if (newX >= 0 && newX < board.length && newY >= 0 && newY < board[0].length) {
-            adjacentCount += board[newX][newY] === 'X' ? 1 : 0;
+        if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+            adjacentCount += board.some(({ x, y }) => x === newX && y === newY) ? 1 : 0;
         }
     });
     return adjacentCount;
 }
 
-export function checkGuess(board: string[][], guess: string[][]) {
-    return board.every((row, i) => row.every((cell, j) => cell === guess[i][j]));
+export function checkGuess(board: { x: number, y: number }[], guess: string[][]): boolean {
+    console.log("board in checkGuess", board);
+    console.log("guess in checkGuess", guess);
+    return board.every(({ x, y }) => guess[x][y] === 'X');
+}
+
+export async function updateProgress(userId: string, date: string, attempts: number): Promise<void> {
+    try {
+        const puzzleDate = new Date(date);
+        let progress = await prisma.userProgress.findUnique({
+            where: {
+                userId_puzzleDate: { userId, puzzleDate }
+            }
+        });
+        if (!progress) {
+            progress = await prisma.userProgress.create({
+                data: { userId, puzzleDate, completed: true, moves: attempts }
+            });
+        } else {
+            progress = await prisma.userProgress.update({
+                where: { userId_puzzleDate: { userId, puzzleDate } },
+                data: { completed: true, moves: attempts }
+            });
+        }
+    } catch (error) {
+        console.error("Error updating progress:", error);
+        throw error;
+    }
 }

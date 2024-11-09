@@ -1,19 +1,22 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
 import { Icons, Title, Board, Button, Text } from '@/components';
-import { getDailyPuzzle } from '@/api/daily-api';
-import { checkGuess, getAdjacentCount } from '@/services/puzzle';
+import { getHint, checkGuess } from '@/api/daily-api';
 import Help from './help'
 
-function Daily() {
+interface DailyProps {
+    date?: string;
+}
+function Daily({
+    date = new Date().toISOString().split('T')[0]
+}: DailyProps) {
 
     const [boardSize] = useState<number>(6);
     const [attempts, setAttempts] = useState<number>(15);
     const [board, setBoard] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
-    const [shape, setShape] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [guess, setGuess] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost">("playing");
     const [guessTileCount, setGuessTileCount] = useState<number>(0);
@@ -23,14 +26,9 @@ function Daily() {
     if (attempts < 0 && gameStatus === "playing") {
         setGameStatus("lost");
     }
-    console.log("shape", shape);
-    console.log("guess", guess);
-    useEffect(() => {
-        getDailyPuzzle(boardSize).then((data) => setShape(data.board));
-    }, [boardSize]);
+    // console.log("guess", guess);
 
-
-    const handleTileClick = (x: number, y: number) => {
+    const handleTileClick = async (x: number, y: number) => {
         if (gameStatus === "guessing") {
             if (guess[x][y] !== '') {
                 setGuess(prevGuess => {
@@ -54,26 +52,30 @@ function Daily() {
         }
         else {
             if (board[x][y] !== '' || attempts <= 0) return;
-            const adjacentCount = getAdjacentCount(shape, x, y);
-            console.log("adjacentCount", adjacentCount);
-            setBoard(prevBoard => {
-                const newBoard = [...prevBoard];
-                newBoard[x][y] = adjacentCount.toString();
-                return newBoard;
-            });
-            setAttempts(prevAttempts => prevAttempts - 1);
-            if (attempts <= 0) {
-                setGameStatus("lost");
+            try {
+                const data = await getHint(date, boardSize, x, y);
+                const adjacentCount = data.adjacentCount;
+                console.log("adjacentCount", adjacentCount);
+                setBoard(prevBoard => {
+                    const newBoard = [...prevBoard];
+                    newBoard[x][y] = adjacentCount.toString();
+                    return newBoard;
+                });
+                setAttempts(prevAttempts => prevAttempts - 1);
+                if (attempts <= 0) {
+                    setGameStatus("lost");
+                }
+            } catch (error) {
+                console.error('Error fetching hint:', error);
             }
         }
     }
 
-    const handleSubmitButton = () => {
+    const handleSubmitButton = async () => {
         console.log("make guess");
         switch (gameStatus) {
             case "won":
             case "lost":
-                getDailyPuzzle(boardSize).then((data) => setShape(data.board));
                 setGameStatus("playing");
                 setBoard(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
                 setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
@@ -81,27 +83,31 @@ function Daily() {
                 setAttempts(10);
                 break;
             case "guessing":
-                const gameWon = checkGuess(shape, guess);
-                console.log("shape", shape);
-                console.log("guess", guess);
-                console.log("gameWon", gameWon);
-                if (gameWon) {
-                    setGameStatus("won");
-                    setBoard(shape);
-                    break;
-                }
-                setIncorrectGuess(true);
-                setTimeout(() => {
-                    setIncorrectGuess(false);
-                    setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
-                    setGuessTileCount(0);
-                }, 1000);
-                setAttempts(prevAttempts => prevAttempts - 2);
-                if (attempts <= 0) {
-                    setGameStatus("lost");
-                }
-                else {
-                    setGameStatus("playing");
+                try {
+                    const response = await checkGuess(date, boardSize, guess, attempts);
+                    const gameWon = response.isCorrect;
+                    console.log("guess", guess);
+                    console.log("gameWon", gameWon);
+                    if (gameWon) {
+                        setGameStatus("won");
+                        setBoard(guess)
+                        break;
+                    }
+                    setIncorrectGuess(true);
+                    setTimeout(() => {
+                        setIncorrectGuess(false);
+                        setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
+                        setGuessTileCount(0);
+                    }, 1000);
+                    setAttempts(prevAttempts => prevAttempts - 2);
+                    if (attempts <= 0) {
+                        setGameStatus("lost");
+                    }
+                    else {
+                        setGameStatus("playing");
+                    }
+                } catch (error) {
+                    console.error('Error checking guess:', error);
                 }
                 break;
             case "playing":
@@ -114,7 +120,7 @@ function Daily() {
         <div className='flex flex-col items-center w-full h-full p-2'>
             {showHelp && <Help setShowHelp={setShowHelp} />}
             <nav className='flex items-center justify-around w-full h-[72px] gap-2'>
-                <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />}/>
+                <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Icons icon={<FaHeart className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Title title='SHABBLE' className='flex-1 text-center' />
                 <Icons icon={<MdLeaderboard className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />

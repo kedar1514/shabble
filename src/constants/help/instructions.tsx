@@ -113,10 +113,10 @@ export const instructions: readonly (string | JSX.Element)[][] = [
         "Taking a hint will consume 1 attempt.",
         "Guessing a shape will consume 2 attempts.",
         <>
-            <p className='text-black font-bold text-xl md:text-2xl text-center'>10 <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>
+            <p className='text-black font-bold text-xl md:text-2xl text-center'>15 <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>
         </>,
         <>
-            Solve the <span className="font-bold">SHABBLE</span> in 10 attempts or fewer.
+            Solve the <span className="font-bold">SHABBLE</span> in 15 attempts or fewer.
         </>,
     ],
     [
