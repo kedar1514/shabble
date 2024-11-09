@@ -5,6 +5,8 @@ import Board from "./ui/board/board";
 import Button from "./ui/button/button";
 import Divider from "./ui/divider/divider";
 import Text from "./ui/text/text";
+import Loader from "./ui/loader/loader";
+import TileLoader from "./ui/loader/tile-loader";
 
 export {
     Icons,
@@ -12,6 +14,8 @@ export {
     Tile,
     Board,
     Button,
-    Divider,
-    Text
+    Divider,    
+    Text,
+    Loader,
+    TileLoader
 }

@@ -11,7 +11,7 @@ export async function GET(request: Request): Promise<NextResponse> {
         if (!isValid) {
             return NextResponse.json({ errors }, { status: 400 });
         }
-        console.log("data in hint route", data);
+        // console.log("data in hint route", data);
 
         const { date, boardSize, x, y } = data;
 

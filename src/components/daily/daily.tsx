@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
-import { Icons, Title, Board, Button, Text } from '@/components';
+import { Icons, Title, Board, Button, Text, Loader, TileLoader } from '@/components';
 import { getHint, checkGuess } from '@/api/daily-api';
 import Help from './help'
 
@@ -18,7 +18,7 @@ function Daily({
     const [attempts, setAttempts] = useState<number>(15);
     const [board, setBoard] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [guess, setGuess] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
-    const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost">("playing");
+    const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost" | "guess-loading">("playing");
     const [guessTileCount, setGuessTileCount] = useState<number>(0);
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
     const [showHelp, setShowHelp] = useState<boolean>(true);
@@ -26,9 +26,9 @@ function Daily({
     if (attempts < 0 && gameStatus === "playing") {
         setGameStatus("lost");
     }
-    // console.log("guess", guess);
 
-    const handleTileClick = async (x: number, y: number) => {
+    const handleTileClick = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
+
         if (gameStatus === "guessing") {
             if (guess[x][y] !== '') {
                 setGuess(prevGuess => {
@@ -52,6 +52,7 @@ function Daily({
         }
         else {
             if (board[x][y] !== '' || attempts <= 0) return;
+            setIsLoading(true);
             try {
                 const data = await getHint(date, boardSize, x, y);
                 const adjacentCount = data.adjacentCount;
@@ -68,6 +69,7 @@ function Daily({
             } catch (error) {
                 console.error('Error fetching hint:', error);
             }
+            setIsLoading(false);
         }
     }
 
@@ -84,9 +86,12 @@ function Daily({
                 break;
             case "guessing":
                 try {
-                    const response = await checkGuess(date, boardSize, guess, attempts);
+                    setGameStatus("guess-loading");
+                    const [_, response] = await Promise.all([
+                        new Promise(resolve => setTimeout(resolve, 2000)), 
+                        checkGuess(date, boardSize, guess, attempts)
+                    ]);
                     const gameWon = response.isCorrect;
-                    console.log("guess", guess);
                     console.log("gameWon", gameWon);
                     if (gameWon) {
                         setGameStatus("won");
@@ -116,6 +121,7 @@ function Daily({
         }
     }
 
+
     return (
         <div className='flex flex-col items-center w-full h-full p-2'>
             {showHelp && <Help setShowHelp={setShowHelp} />}
@@ -133,7 +139,7 @@ function Daily({
                 <div className='flex-1 w-full h-full'></div>
                 <div className='flex flex-col items-center w-full space-y-4'>
                     <Text className='!text-base md:!text-2xl text-gray-400'>
-                        {gameStatus === "guessing" ? `${guessTileCount}/${boardSize} TILES OF HIDDEN SHAPE SELECTED` : "CLICK ANY TILE TO GET A HINT"}
+                        {gameStatus === "guessing" || gameStatus === "guess-loading" ? `${guessTileCount}/${boardSize} TILES OF HIDDEN SHAPE SELECTED` : "CLICK ANY TILE TO GET A HINT"}
                     </Text>
                     <Board
                         board={board}
@@ -161,7 +167,7 @@ function Daily({
                         </Button>
                     </div>
 
-                    {(gameStatus === "playing" || gameStatus === "guessing") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
+                    {(gameStatus === "playing" || gameStatus === "guessing" || gameStatus === "guess-loading") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
                     {gameStatus === "won" && <p className='text-green-600 font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
                     {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
                 </div>

@@ -102,8 +102,8 @@ export function getAdjacentCount(board: { x: number, y: number }[], boardSize: n
 }
 
 export function checkGuess(board: { x: number, y: number }[], guess: string[][]): boolean {
-    console.log("board in checkGuess", board);
-    console.log("guess in checkGuess", guess);
+    // console.log("board in checkGuess", board);
+    // console.log("guess in checkGuess", guess);
     return board.every(({ x, y }) => guess[x][y] === 'X');
 }
 
