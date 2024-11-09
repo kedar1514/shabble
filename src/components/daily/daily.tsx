@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
-import { Icons, Title, Board, Button, Text, Loader, TileLoader } from '@/components';
+import { Icons, Title, Board, Button, Text } from '@/components';
 import { getHint, checkGuess } from '@/api/daily-api';
 import Help from './help'
 
@@ -87,7 +87,7 @@ function Daily({
             case "guessing":
                 try {
                     setGameStatus("guess-loading");
-                    const [_, response] = await Promise.all([
+                    const [, response] = await Promise.all([
                         new Promise(resolve => setTimeout(resolve, 2000)), 
                         checkGuess(date, boardSize, guess, attempts)
                     ]);
