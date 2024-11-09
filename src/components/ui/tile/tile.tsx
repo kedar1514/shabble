@@ -2,6 +2,7 @@
 import { TileLoader } from '@/components';
 import React, { useState } from 'react'
 import { tv } from 'tailwind-variants'
+import { TILE_CORRECT_EMOJI } from '@/constants/daily/game-settings';
 
 interface TileProps {
   className?: string;
@@ -22,7 +23,7 @@ const tile = tv({
       "guess-filled": "bg-green-600",
       "guess-loading": "animate-guessLoading",
       "guess-incorrect": "bg-red-600 animate-shake",
-      "won": "animate-rainbow bg-green-600"
+      "won": "bg-green-600"
     }
   },
   defaultVariants: {
@@ -55,7 +56,7 @@ function Tile({ className, tileContent, guessContent, onClick, gameStatus, incor
         className
       })}
     >
-      {gameStatus === "won" && guessContent ? '✓' : ''}
+      {gameStatus === "won" && guessContent ? TILE_CORRECT_EMOJI : ''}
       {gameStatus === "playing" && tileContent ? tileContent : ''}
       {isLoading && <TileLoader />}
     </div>

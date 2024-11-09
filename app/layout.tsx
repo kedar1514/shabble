@@ -16,6 +16,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Shabble",
   description: "Shabble is a shape guessing game",
+  icons: {
+    icon: '/favicon.ico',    // This will look for the file in the public directory
+  },
 };
 
 export default function RootLayout({

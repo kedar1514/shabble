@@ -5,6 +5,7 @@ import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
 import { Icons, Title, Board, Button, Text, Confetti } from '@/components';
 import { getHint, checkGuess } from '@/api/daily-api';
+import { BOARD_SIZE, MAX_ATTEMPTS } from '@/constants';
 import Help from './help'
 
 interface DailyProps {
@@ -22,8 +23,8 @@ function Daily({
     date = new Date().toISOString().split('T')[0]
 }: DailyProps) {
 
-    const [boardSize] = useState<number>(6);
-    const [attempts, setAttempts] = useState<number>(15);
+    const [boardSize] = useState<number>(BOARD_SIZE);
+    const [attempts, setAttempts] = useState<number>(MAX_ATTEMPTS);
     const [board, setBoard] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [guess, setGuess] = useState<string[][]>(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
     const [gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost" | "guess-loading">("playing");
@@ -90,7 +91,7 @@ function Daily({
                 setBoard(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
                 setGuess(Array.from({ length: boardSize }, () => Array(boardSize).fill('')));
                 setGuessTileCount(0);
-                setAttempts(10);
+                setAttempts(MAX_ATTEMPTS);
                 break;
             case "guessing":
                 try {
@@ -114,12 +115,8 @@ function Daily({
                         setGuessTileCount(0);
                     }, 1000);
                     setAttempts(prevAttempts => prevAttempts - 2);
-                    if (attempts <= 0) {
-                        setGameStatus("lost");
-                    }
-                    else {
-                        setGameStatus("playing");
-                    }
+                    if (attempts <= 0) setGameStatus("lost");
+                    else setGameStatus("playing");
                 } catch (error) {
                     console.error('Error checking guess:', error);
                 }
@@ -129,6 +126,22 @@ function Daily({
                 break;
         }
     }
+
+    const gameStatusMessage = function(): React.ReactNode{
+        switch(gameStatus){
+            case "playing":
+                if(attempts === MAX_ATTEMPTS) return <span className='text-[#a9abad] font-normal'>CLICK ANY TILE TO GET A HINT</span>
+                else return <span className='text-[#a9abad] font-normal'>{attempts} ATTEMPTS REMAINING</span>
+            case "guessing":    
+                return <span className='text-[#a9abad] font-normal'>{guessTileCount}/{boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
+            case "guess-loading":
+                return <span className='text-[#a9abad] font-normal'>CHECKING...</span>
+            case "won":
+                return <span className='text-green-600'>CONGRATS! YOU WON!</span>
+            case "lost":
+                return <span className='text-red-600'>GAME OVER!</span>
+        }
+    } 
 
 
     return (
@@ -148,7 +161,7 @@ function Daily({
                 <div className='flex-1 w-full h-full'></div>
                 <div className='flex flex-col items-center w-full space-y-4'>
                     <Text className='!text-base md:!text-2xl text-gray-400'>
-                        {gameStatus === "guessing" || gameStatus === "guess-loading" ? `${guessTileCount}/${boardSize} TILES OF HIDDEN SHAPE SELECTED` : "CLICK ANY TILE TO GET A HINT"}
+                        DAILY SHABBLE 
                     </Text>
                     <Board
                         board={board}
@@ -176,9 +189,9 @@ function Daily({
                         </Button>
                     </div>
 
-                    {(gameStatus === "playing" || gameStatus === "guessing" || gameStatus === "guess-loading") && <p className='text-black font-bold text-xl md:text-2xl'>{attempts} <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>}
-                    {gameStatus === "won" && <p className='text-green-600 font-bold text-xl md:text-2xl'>CONGRATS! YOU WON!</p>}
-                    {gameStatus === "lost" && <p className='text-red-600 font-bold text-xl md:text-2xl'>GAME OVER!</p>}
+                    <div className='text-black font-bold text-xl md:text-2xl'>
+                        {gameStatusMessage()}
+                    </div>
                 </div>
                 <div className='flex-1 w-full h-full'></div>
             </div>

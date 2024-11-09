@@ -31,25 +31,6 @@
 }
 
 
-
-@keyframes rainbow {
-  0% { background-color: #8B5CF6; }  /* violet */
-  14% { background-color: #6366F1; }  /* indigo */
-  28% { background-color: #3B82F6; }  /* blue */
-  42% { background-color: #10B981; }  /* green */
-  57% { background-color: #FBBF24; }  /* yellow */
-  71% { background-color: #F97316; }  /* orange */
-  85% { background-color: #EF4444; }  /* red */
-  100% { background-color: #8B5CF6; }  /* back to violet */
-}
-
-.animate-rainbow {
-  animation: rainbow 0.5s linear;
-  animation-iteration-count: 3;
-}
-
-
-
 @keyframes slide-up {
   0% { transform: translateY(50%); }
   100% { transform: translateY(0); }
@@ -59,18 +40,6 @@
   animation: slide-up 0.3s ease-out;
 }
 
-
-@keyframes simplifiedRainbow { 
-  0% { background-color: #6B7280; }  /* gray */
-  33% { background-color: #FBBF24; }  /* yellow */
-  66% { background-color: #10B981; }  /* green */
-  100% { background-color: #6B7280; }  /* back to gray */
-}
-
-.animate-simplified-rainbow {
-  animation: simplifiedRainbow 0.5s linear;
-  animation-iteration-count: 3;
-} 
 
 @keyframes guessLoading {
   0% { background-color: #6B7280; }  /* gray */
