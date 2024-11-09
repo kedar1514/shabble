@@ -189,7 +189,7 @@ function Daily({
                         </Button>
                     </div>
 
-                    <div className='text-black font-bold text-xl md:text-2xl'>
+                    <div className='text-black font-bold text-sm sm:text-xl md:text-2xl'>
                         {gameStatusMessage()}
                     </div>
                 </div>

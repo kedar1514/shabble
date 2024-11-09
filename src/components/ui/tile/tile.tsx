@@ -14,7 +14,7 @@ interface TileProps {
 }
 
 const tile = tv({
-  base: "flex items-center justify-center rounded-md md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white shadow-[inset_0_-4px_0_rgba(0,0,0,0.05)]",
+  base: "flex items-center justify-center rounded-md sm:rounded-xl md:rounded-xl font-bold text-2xl md:text-4xl cursor-pointer text-white shadow-[inset_0_-4px_0_rgba(0,0,0,0.05)]",
   variants: {
     status: {
       "tile-empty": "bg-gray-200",
