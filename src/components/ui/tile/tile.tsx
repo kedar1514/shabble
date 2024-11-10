@@ -2,7 +2,7 @@
 import { TileLoader } from '@/components';
 import React, { useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { TILE_CORRECT_EMOJI } from '@/constants/daily/game-settings';
+import { TILE_CORRECT_EMOJI } from '@/constants/daily/game-constants'; // avoids circular dependency
 
 interface TileProps {
   className?: string;
@@ -57,7 +57,7 @@ function Tile({ className, tileContent, guessContent, onClick, gameStatus, incor
       })}
     >
       {gameStatus === "won" && guessContent ? TILE_CORRECT_EMOJI : ''}
-      {gameStatus === "playing" && tileContent ? tileContent : ''}
+      {(gameStatus === "playing" || gameStatus === "lost") && tileContent ? tileContent : ''}
       {isLoading && <TileLoader />}
     </div>
   )

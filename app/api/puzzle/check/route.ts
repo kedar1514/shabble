@@ -1,5 +1,6 @@
 import { validateGuessCheckParams } from "@/lib";
-import { checkGuess, getCurrentBoard, updateProgress } from "@/services";
+import { checkGuess, getCurrentBoard, updateUserProgress } from "@/services";
+import { checkGuessResponse } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -11,18 +12,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             return NextResponse.json({ errors }, { status: 400 });
         }
 
-        const { date, boardSize, guess, attempts } = data;
+        const { puzzleId, guess } = data;
 
-        const currentBoard = await getCurrentBoard(date, boardSize);
-        const isCorrect = checkGuess(currentBoard, guess);
-        if (isCorrect) {
-            await updateProgress(userId!, date, attempts);
-        }
-        return NextResponse.json({ isCorrect }, { status: 200 });
+        const currentBoard = await getCurrentBoard({ puzzleId });
+        const isCorrect = checkGuess(currentBoard.board as { x: number, y: number }[], guess);
+        const updatedUserProgress = await updateUserProgress({ userId: data.userId!, boardSize: currentBoard.boardSize, puzzleId: currentBoard.id, status: isCorrect ? 'CORRECT' : 'WRONG' });
+        return NextResponse.json<checkGuessResponse>({ isCorrect, hintCount: updatedUserProgress.hintCount, gameStatus: updatedUserProgress.status }, { status: 200 });
     } catch (error) {
         console.error("Error checking guess:", error);
         return NextResponse.json({ error: "Error checking guess" }, { status: 500 });
     }
-
-
 }

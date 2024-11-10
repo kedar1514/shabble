@@ -14,27 +14,44 @@ datasource db {
 }
 
 model DailyPuzzle {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @unique @db.Date
-  board     Json
-  boardSize Int
-  createdAt DateTime @default(now())
+  id           Int            @id @default(autoincrement())
+  date         DateTime       @unique @db.Date
+  board        Json
+  boardSize    Int
+  createdAt    DateTime       @default(now())
+  UserProgress UserProgress[]
+
+  @@unique([date, boardSize])
 }
 
 model User {
-    id        String   @id
-    createdAt DateTime @default(now())
-    progress  UserProgress[]
+  id               String         @id
+  played           Int            @default(0)
+  totalStars       Int            @default(0)
+  currentStreak    Int            @default(0)
+  bestStreak       Int            @default(0)
+  starDistribution Int[]          @default([0, 0, 0, 0, 0, 0])
+  createdAt        DateTime       @default(now())
+  progress         UserProgress[]
+}
+
+enum GameStatus {
+  playing
+  won
+  lost
 }
 
 model UserProgress {
-    id         Int      @id @default(autoincrement())
-    userId     String
-    puzzleDate DateTime @db.Date
-    completed  Boolean  @default(false)
-    moves      Int      @default(0)
-    createdAt  DateTime @default(now())
-    user       User     @relation(fields: [userId], references: [id])
+  id                Int         @id @default(autoincrement())
+  userId            String
+  puzzleId          Int
+  hintCoordinates   Json        @default("[]")
+  hintCount         Int         @default(0)
+  status            GameStatus  @default(playing)
+  stars             Int?
+  createdAt         DateTime    @default(now())
+  user              User        @relation(fields: [userId], references: [id])
+  puzzle            DailyPuzzle @relation(fields: [puzzleId], references: [id])
 
-    @@unique([userId, puzzleDate])
+  @@unique([userId, puzzleId])
 }

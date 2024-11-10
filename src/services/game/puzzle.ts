@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { DailyPuzzle } from "@prisma/client";
+import { prisma } from "@/lib";
 
 export async function fetchBoard(boardSize: number): Promise<{ x: number, y: number }[]> {
     const randomCoordinates: { x: number, y: number }[] = [];
-    
+
     // Start with a random position
     const startX = Math.floor(Math.random() * boardSize);
     const startY = Math.floor(Math.random() * boardSize);
@@ -12,11 +11,11 @@ export async function fetchBoard(boardSize: number): Promise<{ x: number, y: num
 
     // Generate 5-7 continuous coordinates
     const targetCount = boardSize; // Random number between 5-7
-    
+
     while (randomCoordinates.length < targetCount) {
         const randIndex = Math.floor(Math.random() * randomCoordinates.length);
         const lastCoord = randomCoordinates[randIndex];
-        
+
         // Possible directions: up, down, left, right
         const directions = [
             { dx: -1, dy: 0 },
@@ -24,15 +23,15 @@ export async function fetchBoard(boardSize: number): Promise<{ x: number, y: num
             { dx: 0, dy: -1 },
             { dx: 0, dy: 1 }
         ];
-        
+
         // Shuffle directions for randomness
         directions.sort(() => Math.random() - 0.5);
-        
+
         // Try each direction until we find a valid new position
         for (const { dx, dy } of directions) {
             const newX = lastCoord.x + dx;
             const newY = lastCoord.y + dy;
-            
+
             // Check if the new position is valid and not already used
             if (
                 newX >= 0 && newX < boardSize &&
@@ -53,12 +52,34 @@ export async function fetchBoard(boardSize: number): Promise<{ x: number, y: num
     return randomCoordinates;
 }
 
-export async function getCurrentBoard(currentDate: string, boardSize: number): Promise<{ x: number, y: number }[]> {
+interface getCurrentBoardParams {
+    puzzleId?: number;
+    boardSize?: number;
+    date?: string;
+}
+export async function getCurrentBoard({ puzzleId, boardSize, date }: getCurrentBoardParams): Promise<DailyPuzzle> {
     try {
-        const puzzleDate = new Date(currentDate);
+        if (puzzleId) {
+            const dailyPuzzle = await prisma.dailyPuzzle.findUnique({
+            where: {
+                id: puzzleId
+            }
+            });
+            if (!dailyPuzzle) {
+                throw new Error("Invalid puzzleId");
+            }
+            return dailyPuzzle;
+        }
+        if (!date || !boardSize) {
+            throw new Error("Invalid date or boardSize");
+        }
+        const puzzleDate = new Date(date);
         let dailyPuzzle = await prisma.dailyPuzzle.findUnique({
             where: {
-                date: puzzleDate
+                date_boardSize: {
+                    date: puzzleDate,
+                    boardSize
+                }
             }
         });
         if (!dailyPuzzle) {
@@ -71,7 +92,7 @@ export async function getCurrentBoard(currentDate: string, boardSize: number): P
                 }
             });
         }
-        return dailyPuzzle.board as { x: number, y: number }[];
+        return dailyPuzzle
     } catch (error) {
         console.error("Error fetching current board:", error);
         throw error;
@@ -107,26 +128,26 @@ export function checkGuess(board: { x: number, y: number }[], guess: string[][])
     return board.every(({ x, y }) => guess[x][y] === 'X');
 }
 
-export async function updateProgress(userId: string, date: string, attempts: number): Promise<void> {
-    try {
-        const puzzleDate = new Date(date);
-        let progress = await prisma.userProgress.findUnique({
-            where: {
-                userId_puzzleDate: { userId, puzzleDate }
-            }
-        });
-        if (!progress) {
-            progress = await prisma.userProgress.create({
-                data: { userId, puzzleDate, completed: true, moves: attempts }
-            });
-        } else {
-            progress = await prisma.userProgress.update({
-                where: { userId_puzzleDate: { userId, puzzleDate } },
-                data: { completed: true, moves: attempts }
-            });
-        }
-    } catch (error) {
-        console.error("Error updating progress:", error);
-        throw error;
-    }
-}
+// export async function updateProgress(userId: string, date: string, attempts: number): Promise<void> {
+//     try {
+//         const puzzleDate = new Date(date);
+//         let progress = await prisma.userProgress.findUnique({
+//             where: {
+//                 userId_puzzleDate: { userId, puzzleDate }
+//             }
+//         });
+//         if (!progress) {
+//             progress = await prisma.userProgress.create({
+//                 data: { userId, puzzleDate, completed: true, moves: attempts }
+//             });
+//         } else {
+//             progress = await prisma.userProgress.update({
+//                 where: { userId_puzzleDate: { userId, puzzleDate } },
+//                 data: { completed: true, moves: attempts }
+//             });
+//         }
+//     } catch (error) {
+//         console.error("Error updating progress:", error);
+//         throw error;
+//     }
+// }

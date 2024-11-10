@@ -1,8 +1,17 @@
-import { getCurrentBoard, getAdjacentCount, checkGuess, updateProgress } from "./puzzle";
+import { getGameStatus, updateUserProgress, getUserProgress } from "./game/game";
 
-export { 
+export {
+    getGameStatus,
+    updateUserProgress,
+    getUserProgress
+}
+
+import { getCurrentBoard, getAdjacentCount, checkGuess } from "./game/puzzle";
+import { createUser } from "./user/user";
+
+export {
+    createUser,
     getCurrentBoard, 
     getAdjacentCount,
-    checkGuess,
-    updateProgress
+    checkGuess
 };

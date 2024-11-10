@@ -1,6 +1,7 @@
-import { getAdjacentCount, getCurrentBoard } from "@/services";
+import { getAdjacentCount, getCurrentBoard, updateUserProgress } from "@/services";
 import { NextResponse } from "next/server";
 import { validateHintParams } from "@/lib";
+import { getHintResponse } from "@/types/api/daily-api";
 
 export async function GET(request: Request): Promise<NextResponse> {
     try {
@@ -8,17 +9,18 @@ export async function GET(request: Request): Promise<NextResponse> {
         const userId = request.headers.get('userId');
 
         const { isValid, errors, data } = validateHintParams(searchParams, userId);
-        if (!isValid) {
+        if (!isValid || !data) {
             return NextResponse.json({ errors }, { status: 400 });
         }
-        // console.log("data in hint route", data);
+        const { puzzleId, x, y } = data;
 
-        const { date, boardSize, x, y } = data;
+        const currentBoard = await getCurrentBoard({ puzzleId });
+        const board = currentBoard.board as { x: number, y: number }[];
 
-        const currentBoard = await getCurrentBoard(date, boardSize);
-        const adjacentCount = getAdjacentCount(currentBoard, boardSize, x, y);
+        const adjacentCount = getAdjacentCount(board, currentBoard.boardSize, x, y);
+        const updatedUserProgress = await updateUserProgress({ userId: data.userId!, puzzleId: currentBoard.id, boardSize: currentBoard.boardSize, hint: { x, y, c: adjacentCount }, status: 'playing' });
 
-        return NextResponse.json({ adjacentCount });
+        return NextResponse.json<getHintResponse>({ adjacentCount, hintCount: updatedUserProgress.hintCount });
     } catch (error) {
         console.error("Error fetching hint:", error);
         return NextResponse.json({ error: "Error fetching hint" }, { status: 500 });

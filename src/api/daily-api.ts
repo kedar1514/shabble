@@ -1,19 +1,20 @@
-import { API_DAILY_PUZZLE, API_HINT, API_CHECK_GUESS } from "@/constants";
+import { API_GAME_STATUS, API_HINT, API_CHECK_GUESS } from "@/constants";
 import { axiosSecure } from "./axios";
-
-export const getDailyPuzzle = async (boardSize: number) => {
+import { checkGuessResponse, GameStatusResponse, getHintResponse } from "@/types";
+    
+export const getGameStatus = async (date: string, boardSize: number): Promise<GameStatusResponse> => {
     try {
-        const response = await axiosSecure.get(`${API_DAILY_PUZZLE}?boardSize=${boardSize}`);
+        const response = await axiosSecure.get(`${API_GAME_STATUS}?date=${date}&boardSize=${boardSize}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching daily puzzle:', error);
+        console.error('Error fetching game settings:', error);
         throw error;
     }
 }
 
-export const getHint = async (date: string, boardSize: number, x: number, y: number) => {
+export const getHint = async (puzzleId: number, x: number, y: number): Promise<getHintResponse> => {
     try {
-        const response = await axiosSecure.get(`${API_HINT}?date=${date}&boardSize=${boardSize}&x=${x}&y=${y}`);
+        const response = await axiosSecure.get(`${API_HINT}?puzzleId=${puzzleId}&x=${x}&y=${y}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching hint:', error);
@@ -21,9 +22,9 @@ export const getHint = async (date: string, boardSize: number, x: number, y: num
     }
 }
 
-export const checkGuess = async (date: string, boardSize: number, guess: string[][], attempts: number) => {
+export const checkGuess = async (puzzleId: number, guess: string[][], attempts: number): Promise<checkGuessResponse> => {
     try {
-        const response = await axiosSecure.post(`${API_CHECK_GUESS}`, { date, boardSize, guess, attempts });
+        const response = await axiosSecure.post(`${API_CHECK_GUESS}`, { puzzleId, guess, attempts });
         return response.data;
     } catch (error) {
         console.error('Error checking guess:', error);
