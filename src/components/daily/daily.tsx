@@ -13,9 +13,6 @@ import Help from './help'
 function Daily() {
 
     const { settings, updateSettings } = useGameSettings();
-    const [guess, setGuess] = useState<string[][]>(Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')));
-    // const [settings.gameStatus, setGameStatus] = useState<"playing" | "guessing" | "won" | "lost" | "guess-loading">("playing");
-    const [guessTileCount, setGuessTileCount] = useState<number>(0);
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
     const [showHelp, setShowHelp] = useState<boolean>(true);
     // const [statistics, setStatistics] = useState<{
@@ -35,87 +32,80 @@ function Daily() {
     // if (settings.hints >= MAX_HINTS[settings.boardSize] && settings.gameStatus === "playing") {
     //     setGameStatus("lost");
     // }
+    // if(settings.gameStatus === "won" && settings.guess !== settings.board) {
+    //     setGuess(settings.board);
+    // }
 
     const handleTileClick = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
 
         if (settings.gameStatus === "guessing") {
-            if (guess[x][y] !== '') {
-                setGuess(prevGuess => {
-                    const newGuess = [...prevGuess];
-                    newGuess[x][y] = '';
-                    console.log("newGuess inside handletileclick", newGuess);
-
-                    return newGuess;
-                });
-                setGuessTileCount(prevCount => prevCount - 1);
-            }
-            else {
-                if (guessTileCount >= settings.boardSize) return;
-                setGuess(prevGuess => {
-                    const newGuess = [...prevGuess];
-                    newGuess[x][y] = 'X';
-                    return newGuess;
-                });
-                setGuessTileCount(prevCount => prevCount + 1);
-            }
+            handleGuessingMode(x, y);
         }
         else {
-            if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return;
-            setIsLoading(true);
-            try {
-                const data = await getHint(settings.puzzleId, x, y);
-                const adjacentCount = data.adjacentCount;
-                console.log("adjacentCount", adjacentCount);
-                const newBoard = [...settings.board]
-                newBoard[x][y] = adjacentCount.toString();
-                updateSettings({ hints: data.hintCount, board: newBoard }); 
-                // if (settings.hints >= MAX_HINTS[settings.boardSize]) {
-                //     setGameStatus("lost");
-                // }
-            } catch (error) {
-                console.error('Error fetching hint:', error);
-            }
-            setIsLoading(false);
+            handlePlayingMode(x, y, setIsLoading);
         }
     }
 
+    const handleGuessingMode = (x: number, y: number) => {
+        if (settings.guess[x][y] !== '') {
+            updateGuess(x, y, '');
+            updateSettings({ guessTileCount: settings.guessTileCount - 1 });
+        } else if (settings.guessTileCount < settings.boardSize) {
+            updateGuess(x, y, 'X');
+            updateSettings({ guessTileCount: settings.guessTileCount + 1 });
+        }
+    }
+
+    const handlePlayingMode = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
+        if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return;
+        setIsLoading(true);
+        try {
+            const data = await getHint(settings.puzzleId, x, y);
+            const newBoard = [...settings.board];
+            newBoard[x][y] = data.adjacentCount.toString();
+            updateSettings({ hints: data.hintCount, board: newBoard });
+        } catch (error) {
+            console.error('Error fetching hint:', error);
+        }
+        setIsLoading(false);
+    }
+
+    const updateGuess = (x: number, y: number, value: string) => {
+        const newGuess = [...settings.guess];
+        newGuess[x][y] = value;
+        updateSettings({ guess: newGuess });
+    }
+
     const handleSubmitButton = async () => {
-        console.log("make guess");
         switch (settings.gameStatus) {
             case "won":
             case "lost":
-                // setGameStatus("playing");
-                // setBoard(Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')));
-                // setGuess(Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')));
-                // setGuessTileCount(0);
-                // updateSettings({ hints: MAX_HINTS[settings.boardSize] }); 
                 break;
             case "guessing":
                 try {
                     updateSettings({ gameStatus: "guess-loading" });
                     const [response,] = await Promise.all([
-                        checkGuess(settings.puzzleId, guess, settings.hints),
+                        checkGuess(settings.puzzleId, settings.guess, settings.hints),
                         new Promise(resolve => setTimeout(resolve, 2000))
                     ]);
                     const gameWon = response.isCorrect;
                     console.log("gameWon", gameWon);
                     if (gameWon) {
                         // setGameStatus("won");
-                        updateSettings({ board: guess, gameStatus: "won" });
+                        updateSettings({ board: settings.guess, gameStatus: "won" });
                         Confetti()
                         break;
                     }
                     setIncorrectGuess(true);
                     setTimeout(() => {
                         setIncorrectGuess(false);
-                        setGuess(Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')));
-                        setGuessTileCount(0);
+                        updateSettings({ guess: Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')), guessTileCount: 0 });
                     }, 1000);
                     updateSettings({ hints: response.hintCount, gameStatus: response.gameStatus });
                     // if (settings.hints >= MAX_HINTS[settings.boardSize]) setGameStatus("lost");
                     // else setGameStatus("playing");
                 } catch (error) {
-                    console.error('Error checking guess:', error);
+                    console.error('Error checking settings.guess:', error);
                 }
                 break;
             case "playing":
@@ -130,7 +120,7 @@ function Daily() {
                 if (settings.hints === 0) return <span className='text-[#a9abad] font-normal'>CLICK ANY TILE TO GET A HINT</span>
                 else return <span className='text-[#a9abad] font-normal'>{MAX_HINTS[settings.boardSize] - settings.hints} ATTEMPTS REMAINING</span>
             case "guessing":
-                return <span className='text-[#a9abad] font-normal'>{guessTileCount}/{settings.boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
+                return <span className='text-[#a9abad] font-normal'>{settings.guessTileCount}/{settings.boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
             case "guess-loading":
                 return <span className='text-[#a9abad] font-normal'>CHECKING...</span>
             case "won":
@@ -162,7 +152,7 @@ function Daily() {
                     </Text>
                     <Board
                         board={settings.board}
-                        guess={guess}
+                        guess={settings.guess}
                         onTileClick={handleTileClick}
                         gameStatus={settings.gameStatus}
                         incorrectGuess={incorrectGuess}
@@ -179,7 +169,7 @@ function Daily() {
                         }
                         <Button
                             onClick={handleSubmitButton}
-                            disabled={settings.gameStatus === "guessing" && guessTileCount !== settings.boardSize}
+                            disabled={settings.gameStatus === "guessing" && settings.guessTileCount !== settings.boardSize}
                             className='h-[48px] md:h-[64px] bg-green-600 font-bold text-xl md:text-2xl'
                         >
                             {settings.gameStatus === "won" || settings.gameStatus === "lost" ? 'PLAY AGAIN' : settings.gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}

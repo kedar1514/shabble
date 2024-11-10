@@ -1,5 +1,6 @@
 export interface GameStatusResponse {
     hintCoordinates: { x: number, y: number, c: number }[];
+    solutionCoordinates?: { x: number, y: number }[];
     hintCount: number;
     puzzleId: number;
     gameStatus: "playing" | "won" | "lost";

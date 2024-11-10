@@ -91,11 +91,15 @@ export const getGameStatus = async (date: string, boardSize: number, userId: str
             }
             return status;
         }
+       
         const status: GameStatusResponse = {
             hintCoordinates: userProgress.hintCoordinates as { x: number, y: number, c: number }[],
             hintCount: userProgress.hintCount,
             puzzleId: currentBoard.id,
             gameStatus: userProgress.status as "playing" | "won" | "lost"
+        }
+        if (userProgress.status === 'won') {
+            status.solutionCoordinates = currentBoard.board as { x: number, y: number }[];
         }
         return status;
     } catch (error) {

@@ -10,6 +10,8 @@ interface GameSettings {
   boardSize: keyof typeof MAX_HINTS;
   hints: number;
   board: string[][];
+  guess: string[][];
+  guessTileCount: number;
   gameStatus: "playing" | "guessing" | "won" | "lost" | "guess-loading";
 }
 
@@ -18,8 +20,10 @@ export function useGameSettings() {
     puzzleId: 0,
     date: new Date().toISOString().split('T')[0],
     boardSize: DEFAULT_BOARD_SIZE,
+    board: Array.from({ length: DEFAULT_BOARD_SIZE }, () => Array(DEFAULT_BOARD_SIZE).fill('')),
+    guess: Array.from({ length: DEFAULT_BOARD_SIZE }, () => Array(DEFAULT_BOARD_SIZE).fill('')),
+    guessTileCount: 0,
     hints: 0,
-    board: [],
     gameStatus: "playing"
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +43,12 @@ export function useGameSettings() {
           board: coordinatesToBoard(data.hintCoordinates, settings.boardSize),
           gameStatus: data.gameStatus
         }));
+        if(data.gameStatus === "won" && data.solutionCoordinates){
+          setSettings(prev => ({
+            ...prev,
+            guess: coordinatesToBoard(data.solutionCoordinates || [], settings.boardSize),
+          }));
+        }
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch game settings'));
       } finally {
