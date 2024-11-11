@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
-import { MdLeaderboard, MdStars } from "react-icons/md";
+import { MdLeaderboard } from "react-icons/md";
 import { RiStarSFill } from "react-icons/ri";
 import { Icons, Title, Board, Button, Text, Confetti } from '@/components';
 import { getHint, checkGuess } from '@/api/daily-api';
