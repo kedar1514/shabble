@@ -2,10 +2,14 @@ import { prisma } from "./db/connect";
 
 export { prisma };
 
-import { coordinatesToBoard } from "./utils/puzzle";
+import { 
+    coordinatesToBoard,
+    getPuzzleNumber
+ } from "./utils/puzzle";
 
 export {
-    coordinatesToBoard
+    coordinatesToBoard,
+    getPuzzleNumber
 }
 
 import { validateHintParams } from "./validation/hint-validation";

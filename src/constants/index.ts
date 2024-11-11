@@ -6,7 +6,8 @@ import {
     DEFAULT_BOARD_SIZE, 
     MAX_HINTS, 
     MAX_STARS,
-    TILE_CORRECT_EMOJI 
+    TILE_CORRECT_EMOJI,
+    PUZZLE_START_DATE
 } from "./daily/game-constants";
 
 export { 
@@ -18,5 +19,6 @@ export {
     DEFAULT_BOARD_SIZE,
     MAX_HINTS,
     MAX_STARS,
-    TILE_CORRECT_EMOJI
+    TILE_CORRECT_EMOJI,
+    PUZZLE_START_DATE
 };

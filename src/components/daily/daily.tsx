@@ -9,6 +9,7 @@ import { MAX_HINTS } from '@/constants';
 import { useGameSettings } from '@/hooks';
 import Help from './help'
 import Statistics from './statistics';
+import { getPuzzleNumber } from '@/lib';
 
 
 function Daily() {
@@ -75,12 +76,6 @@ function Daily() {
                 return <span className='text-[#a9abad] font-normal'>CHECKING...</span>
             case "guessing":
                 return <span className='text-[#a9abad] font-normal'>{settings.guessTileCount}/{settings.boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
-
-
-            // case "won":
-            //     return <span className='text-green-600'>CONGRATS! YOU WON!</span>
-            // case "lost":
-            //     return <span className='text-red-600'>GAME OVER!</span>
         }
     }
 
@@ -112,7 +107,7 @@ function Daily() {
                         <div className='flex-1 w-full h-full'></div>
                         <div className='flex flex-col items-center w-full space-y-4'>
                             <Text className='!text-base md:!text-2xl text-gray-400'>
-                                DAILY SHABBLE
+                                DAILY SHABBLE #{getPuzzleNumber(settings.date)}
                             </Text>
                             <Board
                                 board={settings.board}
@@ -131,13 +126,14 @@ function Daily() {
                                         GO BACK
                                     </Button>
                                 }
-                                <Button
+                                {settings.gameStatus !== "won" && settings.gameStatus !== "lost" && <Button
                                     onClick={handleSubmitButton}
                                     disabled={settings.gameStatus === "guessing" && settings.guessTileCount !== settings.boardSize}
                                     className='h-[48px] md:h-[64px] bg-green-600 font-bold text-xl md:text-2xl'
                                 >
-                                    {settings.gameStatus === "won" || settings.gameStatus === "lost" ? 'PLAY AGAIN' : settings.gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
+                                    {settings.gameStatus === "guessing" ? 'SUBMIT' : 'MAKE A GUESS'}
                                 </Button>
+                                }
                             </div>
 
                             <div className='text-black font-bold text-sm sm:text-xl md:text-2xl'>
@@ -151,8 +147,18 @@ function Daily() {
                                         )) : <span className='text-[#a9abad] font-normal text-sm sm:text-xl md:text-2xl'>NO STARS THIS TIME</span>}
                                     </div>
                                     <div className='flex items-center justify-center w-full h-[90px] bg-gray-100'>
-                                        {settings.gameStatus === "won" && <span className='text-green-700 font-bold text-sm sm:text-xl md:text-2xl'>CONGRATS! YOU WON!</span>}
-                                        {settings.gameStatus === "lost" && <span className='text-red-700 font-bold text-sm sm:text-xl md:text-2xl'>GAME OVER!</span>}
+                                        {settings.gameStatus === "won" &&
+                                            <div className='flex flex-col items-center justify-center'>
+                                                <span className='text-green-700 font-bold text-sm sm:text-xl md:text-2xl'>CONGRATS! YOU WON!</span>
+                                                <span className='text-black font-base text-sm sm:text-md md:text-xl'>Come back tomorrow to guess the new shape!</span>
+                                            </div>
+                                        }
+                                        {settings.gameStatus === "lost" &&
+                                            <div className='flex flex-col items-center justify-center'>
+                                                <span className='text-red-700 font-bold text-sm sm:text-xl md:text-2xl'>GAME OVER!</span>
+                                                <span className='text-black font-base text-sm sm:text-md md:text-xl'>Come back tomorrow to guess the new shape!</span>
+                                            </div>
+                                        }
                                     </div>
                                 </>
                             )}
