@@ -1,6 +1,6 @@
 import { prisma } from "@/lib";
 import { getCurrentBoard } from "./puzzle";
-import { MAX_HINTS } from "@/constants";
+import { MAX_HINTS, MAX_STARS } from "@/constants";
 import { GameStatusResponse } from "@/types";
 import { UserProgress } from "@prisma/client";
 import { InputJsonValue } from "@prisma/client/runtime/library";
@@ -48,14 +48,14 @@ export const updateUserProgress = async ({ userId, puzzleId, boardSize, hint, st
         if (status === 'CORRECT' || status === 'WRONG') {
             if (status === 'CORRECT') {
                 userProgress.status = 'won';
-                userProgress.stars = Math.max(1, MAX_HINTS[boardSize as keyof typeof MAX_HINTS] - userProgress.hintCount);
+                userProgress.stars = Math.min(MAX_STARS, Math.max(1, MAX_HINTS[boardSize as keyof typeof MAX_HINTS] - userProgress.hintCount));
             }
             else {
                 const updatedHintCount = userProgress.hintCount + 2;
                 if (updatedHintCount > MAX_HINTS[boardSize as keyof typeof MAX_HINTS]) {
                     userProgress.status = 'lost';
                 }
-                userProgress.hintCount = updatedHintCount;
+                userProgress.hintCount = Math.min(updatedHintCount, MAX_HINTS[boardSize as keyof typeof MAX_HINTS]);
             }
         }
         console.log("userProgress in updateUserProgress after", userProgress);
@@ -100,6 +100,7 @@ export const getGameStatus = async (date: string, boardSize: number, userId: str
         }
         if (userProgress.status === 'won') {
             status.solutionCoordinates = currentBoard.board as { x: number, y: number }[];
+            status.stars = userProgress.stars || 0;
         }
         return status;
     } catch (error) {

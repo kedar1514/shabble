@@ -5,7 +5,7 @@ import { instructions } from "./help/instructions";
 import { 
     DEFAULT_BOARD_SIZE, 
     MAX_HINTS, 
-    STAR_COUNT, 
+    MAX_STARS,
     TILE_CORRECT_EMOJI 
 } from "./daily/game-constants";
 
@@ -17,6 +17,6 @@ export {
     instructions,
     DEFAULT_BOARD_SIZE,
     MAX_HINTS,
-    STAR_COUNT,
+    MAX_STARS,
     TILE_CORRECT_EMOJI
 };

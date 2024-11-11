@@ -2,7 +2,8 @@
 import React, { useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { FaHeart, FaQuestion } from "react-icons/fa";
-import { MdLeaderboard } from "react-icons/md";
+import { MdLeaderboard, MdStars } from "react-icons/md";
+import { RiStarSFill } from "react-icons/ri";
 import { Icons, Title, Board, Button, Text, Confetti } from '@/components';
 import { getHint, checkGuess } from '@/api/daily-api';
 import { MAX_HINTS } from '@/constants';
@@ -28,7 +29,7 @@ function Daily() {
     //     bestStreak: 0,
     //     starDistribution: Array(STAR_COUNT + 1).fill(0)
     // });
-    console.log("Settings inside daily",settings)
+    console.log("Settings inside daily", settings)
     // if (settings.hints >= MAX_HINTS[settings.boardSize] && settings.gameStatus === "playing") {
     //     setGameStatus("lost");
     // }
@@ -92,7 +93,7 @@ function Daily() {
                     console.log("gameWon", gameWon);
                     if (gameWon) {
                         // setGameStatus("won");
-                        updateSettings({ board: settings.guess, gameStatus: "won" });
+                        updateSettings({ board: settings.guess, gameStatus: "won", stars: response.stars });
                         Confetti()
                         break;
                     }
@@ -116,25 +117,29 @@ function Daily() {
 
     const gameStatusMessage = function (): React.ReactNode {
         switch (settings.gameStatus) {
+            case "won":
+            case "lost":
             case "playing":
-                if (settings.hints === 0) return <span className='text-[#a9abad] font-normal'>CLICK ANY TILE TO GET A HINT</span>
-                else return <span className='text-[#a9abad] font-normal'>{MAX_HINTS[settings.boardSize] - settings.hints} ATTEMPTS REMAINING</span>
-            case "guessing":
-                return <span className='text-[#a9abad] font-normal'>{settings.guessTileCount}/{settings.boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
+                if (settings.hints === 0 && settings.gameStatus !== "won") return <span className='text-[#a9abad] font-normal'>CLICK ANY TILE TO GET A HINT</span>
+                else return <span className='text-[#a9abad] font-normal'><span className='font-bold text-black'>{MAX_HINTS[settings.boardSize] - settings.hints}</span> HINTS REMAINING</span>
             case "guess-loading":
                 return <span className='text-[#a9abad] font-normal'>CHECKING...</span>
-            case "won":
-                return <span className='text-green-600'>CONGRATS! YOU WON!</span>
-            case "lost":
-                return <span className='text-red-600'>GAME OVER!</span>
+            case "guessing":
+                return <span className='text-[#a9abad] font-normal'>{settings.guessTileCount}/{settings.boardSize} TILES OF HIDDEN SHAPE SELECTED</span>
+
+
+            // case "won":
+            //     return <span className='text-green-600'>CONGRATS! YOU WON!</span>
+            // case "lost":
+            //     return <span className='text-red-600'>GAME OVER!</span>
         }
     }
 
 
     return (
-        <div className='flex flex-col items-center w-full h-full p-2'>
+        <div className='flex flex-col items-center w-full h-full'>
             {showHelp && <Help setShowHelp={setShowHelp} />}
-            <nav className='flex items-center justify-around w-full h-[72px] gap-2'>
+            <nav className='flex items-center justify-around w-full h-[72px] gap-2 p-2'>
                 <Icons icon={<TiThMenu className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Icons icon={<FaHeart className='w-[20px] h-[20px] md:w-[24px] md:h-[24px]' />} />
                 <Title title='SHABBLE' className='flex-1 text-center' />
@@ -179,6 +184,19 @@ function Daily() {
                     <div className='text-black font-bold text-sm sm:text-xl md:text-2xl'>
                         {gameStatusMessage()}
                     </div>
+                    {(settings.gameStatus === "won" || settings.gameStatus === "lost") && (
+                        <>
+                            <div className='flex items-center justify-center space-x-2 h-[30px] md:h-[50px]'>
+                                {settings.stars ? Array.from({ length: settings.stars }, (_, index) => (
+                                    <RiStarSFill className='w-[40px] h-[40px] md:w-[50px] md:h-[50px] text-[#ffac33]' key={index} />
+                                )) : <span className='text-[#a9abad] font-normal'>NO STARS THIS TIME</span>}
+                            </div>
+                            <div className='flex items-center justify-center w-full h-[90px] bg-gray-100'>
+                                {settings.gameStatus === "won" && <span className='text-green-700 font-bold text-sm sm:text-xl md:text-2xl'>CONGRATS! YOU WON!</span>}
+                                {settings.gameStatus === "lost" && <span className='text-red-700 font-bold text-sm sm:text-xl md:text-2xl'>GAME OVER!</span>}
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className='flex-1 w-full h-full'></div>
             </div>

@@ -61,7 +61,7 @@ export const instructions: readonly (string | JSX.Element)[][] = [
             <span className='bg-green-300 text-black py-1'>The Goal is to find the hidden Shape!</span>
         </>,
         <>
-            You will earn a star for every attempt you have remaining once the <span className="font-bold">SHABBLE</span> is solved ⭐
+            You will earn a star for every hint you have remaining once the <span className="font-bold">SHABBLE</span> is solved ⭐
         </>
     ],
     [
@@ -91,7 +91,9 @@ export const instructions: readonly (string | JSX.Element)[][] = [
         </>
     ],
     [
-        "Clicking on any tile will reveal the number of blocks of hidden shape adjacent to it.",
+        <>
+            Clicking on any tile will reveal the number of blocks of hidden shape surrounding it.
+        </>,
         <>
             <div className='flex flex-wrap justify-center gap-4'>
                 {tileBlocks.map((block, index) => (
@@ -107,13 +109,17 @@ export const instructions: readonly (string | JSX.Element)[][] = [
                     />
                 ))}
             </div>
+        </>,
+        <>
+            In this above example, every tile with a number reveals the number of blocks of hidden shape surrounding it.
         </>
     ],
     [
-        "Taking a hint will consume 1 attempt.",
-        "Guessing a shape will consume 2 attempts.",
         <>
-            <p className='text-black font-bold text-xl md:text-2xl text-center'>15 <span className='text-[#a9abad] font-normal'>ATTEMPTS REMAINING</span></p>
+            Guessing a incorrect shape would consume 2 hints.
+        </>,
+        <>
+            <p className='text-black font-bold text-xl md:text-2xl text-center'>15 <span className='text-[#a9abad] font-normal'>HINTS REMAINING</span></p>
         </>,
         <>
             Solve the <span className="font-bold">SHABBLE</span> in 15 attempts or fewer.

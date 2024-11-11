@@ -4,5 +4,5 @@ export const MAX_HINTS = {
     7: 20
 };
 export const DEFAULT_BOARD_SIZE: keyof typeof MAX_HINTS = 6;
-export const STAR_COUNT = 5;
+export const MAX_STARS = 5;
 export const TILE_CORRECT_EMOJI = '✓';

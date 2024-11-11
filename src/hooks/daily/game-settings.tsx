@@ -13,6 +13,7 @@ interface GameSettings {
   guess: string[][];
   guessTileCount: number;
   gameStatus: "playing" | "guessing" | "won" | "lost" | "guess-loading";
+  stars: number;
 }
 
 export function useGameSettings() {
@@ -24,7 +25,8 @@ export function useGameSettings() {
     guess: Array.from({ length: DEFAULT_BOARD_SIZE }, () => Array(DEFAULT_BOARD_SIZE).fill('')),
     guessTileCount: 0,
     hints: 0,
-    gameStatus: "playing"
+    gameStatus: "playing",
+    stars: 0
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -43,10 +45,11 @@ export function useGameSettings() {
           board: coordinatesToBoard(data.hintCoordinates, settings.boardSize),
           gameStatus: data.gameStatus
         }));
-        if(data.gameStatus === "won" && data.solutionCoordinates){
+        if(data.gameStatus === "won"){
           setSettings(prev => ({
             ...prev,
             guess: coordinatesToBoard(data.solutionCoordinates || [], settings.boardSize),
+            stars: data.stars || 0
           }));
         }
       } catch (err) {
