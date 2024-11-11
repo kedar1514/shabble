@@ -136,7 +136,7 @@ function Daily() {
                             <div className='flex items-center justify-center space-x-2 h-[30px] md:h-[50px]'>
                                 {settings.stars ? Array.from({ length: settings.stars }, (_, index) => (
                                     <RiStarSFill className='w-[40px] h-[40px] md:w-[50px] md:h-[50px] text-[#ffac33]' key={index} />
-                                )) : <span className='text-[#a9abad] font-normal'>NO STARS THIS TIME</span>}
+                                )) : <span className='text-[#a9abad] font-normal text-sm sm:text-xl md:text-2xl'>NO STARS THIS TIME</span>}
                             </div>
                             <div className='flex items-center justify-center w-full h-[90px] bg-gray-100'>
                                 {settings.gameStatus === "won" && <span className='text-green-700 font-bold text-sm sm:text-xl md:text-2xl'>CONGRATS! YOU WON!</span>}

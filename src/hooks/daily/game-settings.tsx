@@ -70,13 +70,15 @@ export function useGameSettings() {
     if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return;
     
     try {
+      updateSettings({ hints: settings.hints + 1 });
       const data = await getHint(settings.puzzleId, x, y);
       const newBoard = [...settings.board];
       newBoard[x][y] = data.adjacentCount.toString();
-      updateSettings({ hints: data.hintCount, board: newBoard });
+      updateSettings({ board: newBoard });
       return true;
     } catch (error) {
       console.error('Error fetching hint:', error);
+      updateSettings({ hints: settings.hints - 1 });
       return false;
     }
   };
