@@ -4,6 +4,7 @@ import { MAX_HINTS, MAX_STARS } from "@/constants";
 import { GameStatusResponse } from "@/types";
 import { UserProgress } from "@prisma/client";
 import { InputJsonValue } from "@prisma/client/runtime/library";
+import { getStatistics, incrementPlayedCount, updateStars, updateStreak } from "@/services";
 
 export const getUserProgress = async (userId: string, puzzleId: number): Promise<UserProgress> => {
     try {
@@ -12,9 +13,12 @@ export const getUserProgress = async (userId: string, puzzleId: number): Promise
             where: { userId_puzzleId: { userId, puzzleId } }
         });
         if (!userProgress) {
-            userProgress = await prisma.userProgress.create({
-                data: { userId, puzzleId }
-            });
+            [userProgress,] = await Promise.all([
+                prisma.userProgress.create({
+                    data: { userId, puzzleId }
+                }),
+                incrementPlayedCount(userId)
+            ]);
             return userProgress;
         }
         return userProgress;
@@ -39,27 +43,34 @@ export const updateUserProgress = async ({ userId, puzzleId, boardSize, hint, st
         console.log("updateUserProgress", { userId, puzzleId, boardSize, hint, status });
         const userProgress = await getUserProgress(userId, puzzleId);
         console.log("userProgress in updateUserProgress", userProgress);
-        
+
         if (hint) {
             const hintCoordinates = userProgress.hintCoordinates as { x: number, y: number }[];
             userProgress.hintCoordinates = [...hintCoordinates, hint];
             userProgress.hintCount += 1;
         }
-        if (status === 'CORRECT' || status === 'WRONG') {
-            if (status === 'CORRECT') {
-                userProgress.status = 'won';
-                userProgress.stars = Math.min(MAX_STARS, Math.max(1, MAX_HINTS[boardSize as keyof typeof MAX_HINTS] - userProgress.hintCount));
+        if (status === 'CORRECT') {
+            userProgress.status = 'won';
+            userProgress.stars = Math.min(MAX_STARS, Math.max(1, MAX_HINTS[boardSize as keyof typeof MAX_HINTS] - userProgress.hintCount));
+            await Promise.all([
+                updateStreak(userId, true),
+                updateStars(userId, userProgress.stars)
+            ]);
+        }
+        else if (status === 'WRONG') {
+            const updatedHintCount = userProgress.hintCount + 2;
+            if (updatedHintCount > MAX_HINTS[boardSize as keyof typeof MAX_HINTS]) {
+                userProgress.status = 'lost';
             }
-            else {
-                const updatedHintCount = userProgress.hintCount + 2;
-                if (updatedHintCount > MAX_HINTS[boardSize as keyof typeof MAX_HINTS]) {
-                    userProgress.status = 'lost';
-                }
-                userProgress.hintCount = Math.min(updatedHintCount, MAX_HINTS[boardSize as keyof typeof MAX_HINTS]);
-            }
+            userProgress.hintCount = Math.min(updatedHintCount, MAX_HINTS[boardSize as keyof typeof MAX_HINTS]);
+            await Promise.all([
+                updateStreak(userId, false),
+                updateStars(userId, 0)
+            ]);
+
         }
         console.log("userProgress in updateUserProgress after", userProgress);
-        
+
         const updatedUserProgress = await prisma.userProgress.update({
             where: { userId_puzzleId: { userId, puzzleId } },
             data: {
@@ -82,21 +93,24 @@ export const getGameStatus = async (date: string, boardSize: number, userId: str
         const userProgress = await prisma.userProgress.findUnique({
             where: { userId_puzzleId: { userId, puzzleId: currentBoard.id } }
         });
+        const statistics = await getStatistics(userId);
         if (!userProgress) {
             const status: GameStatusResponse = {
                 hintCoordinates: [],
                 hintCount: 0,
                 puzzleId: currentBoard.id,
-                gameStatus: "playing"
+                gameStatus: "playing",
+                statistics
             }
             return status;
         }
-       
+
         const status: GameStatusResponse = {
             hintCoordinates: userProgress.hintCoordinates as { x: number, y: number, c: number }[],
             hintCount: userProgress.hintCount,
             puzzleId: currentBoard.id,
-            gameStatus: userProgress.status as "playing" | "won" | "lost"
+            gameStatus: userProgress.status as "playing" | "won" | "lost",
+            statistics
         }
         if (userProgress.status === 'won') {
             status.solutionCoordinates = currentBoard.board as { x: number, y: number }[];

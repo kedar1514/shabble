@@ -1,3 +1,5 @@
+import { Statistics } from "../puzzle/puzzle";
+
 export interface GameStatusResponse {
     hintCoordinates: { x: number, y: number, c: number }[];
     hintCount: number;
@@ -5,6 +7,13 @@ export interface GameStatusResponse {
     gameStatus: "playing" | "won" | "lost";
     solutionCoordinates?: { x: number, y: number }[];
     stars?: number;
+    statistics: {
+        played: number;
+        totalStars: number;
+        currentStreak: number;
+        bestStreak: number;
+        starDistribution: number[];
+    };
 }
 
 export interface getHintResponse {
@@ -17,4 +26,5 @@ export interface checkGuessResponse {
     hintCount: number;
     gameStatus: "playing" | "won" | "lost";
     stars?: number;
+    statistics: Statistics;
 }

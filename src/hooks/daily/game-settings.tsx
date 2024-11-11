@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { checkGuess, getGameStatus, getHint } from '@/api/daily-api';
-import { DEFAULT_BOARD_SIZE, MAX_HINTS } from '@/constants';
+import { DEFAULT_BOARD_SIZE, MAX_HINTS, MAX_STARS } from '@/constants';
 import { GameStatusResponse } from '@/types';
 import { coordinatesToBoard } from '@/lib';
 
@@ -14,6 +14,13 @@ interface GameSettings {
   guessTileCount: number;
   gameStatus: "playing" | "guessing" | "won" | "lost" | "guess-loading";
   stars: number;
+  statistics: {
+    played: number;
+    totalStars: number;
+    currentStreak: number;
+    bestStreak: number;
+    starDistribution: number[];
+  };
 }
 
 export function useGameSettings() {
@@ -26,7 +33,14 @@ export function useGameSettings() {
     guessTileCount: 0,
     hints: 0,
     gameStatus: "playing",
-    stars: 0
+    stars: 0,
+    statistics: {
+      played: 0,
+      totalStars: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      starDistribution: Array(MAX_STARS + 1).fill(0)
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -43,7 +57,8 @@ export function useGameSettings() {
           puzzleId: data.puzzleId,
           hints: data.hintCount,
           board: coordinatesToBoard(data.hintCoordinates, settings.boardSize),
-          gameStatus: data.gameStatus
+          gameStatus: data.gameStatus,
+          statistics: data.statistics
         }));
         if(data.gameStatus === "won"){
           setSettings(prev => ({
@@ -95,7 +110,8 @@ export function useGameSettings() {
         updateSettings({ 
           board: settings.guess, 
           gameStatus: "won", 
-          stars: response.stars 
+          stars: response.stars,
+          statistics: response.statistics
         });
         return { success: true, won: true };
       }
@@ -103,6 +119,7 @@ export function useGameSettings() {
       updateSettings({ 
         hints: response.hintCount, 
         gameStatus: response.gameStatus,
+        statistics: response.statistics
       });
       
       return { success: true, won: false };

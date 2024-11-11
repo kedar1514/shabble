@@ -1,31 +1,13 @@
-import { tv, type VariantProps } from "tailwind-variants";
+import { tv } from "tailwind-variants";
 
-const loader = tv({
-    base: "animate-spin rounded-full border-solid border-t-transparent",
-    variants: {
-        size: {
-            sm: "h-4 w-4 border-2",
-            md: "h-6 w-6 border-2",
-            lg: "h-8 w-8 border-3",
-            xl: "h-12 w-12 border-4",
-        },
-        color: {
-            primary: "border-blue-500",
-            secondary: "border-gray-400",
-            white: "border-white",
-            black: "border-black",
-        },
-    },
-    defaultVariants: {
-        size: "md",
-        color: "primary",
-    },
+const tileLoader = tv({
+  base: "animate-spin rounded-md sm:rounded-xl md:rounded-xl bg-yellow-400 h-8 w-8 md:h-12 md:w-12 z-0",
 });
 
-interface LoaderProps extends VariantProps<typeof loader> {
-    className?: string;
+interface TileLoaderProps {
+  className?: string;
 }
 
-export default function Loader({ size, color, className }: LoaderProps) {
-    return <div className={loader({ size, color, className })} />;
+export default function TileLoader({ className }: TileLoaderProps) {
+  return <div className={tileLoader({ className })} />;
 }

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PuzzleCheckParams } from "@/types/puzzle";
+import { PuzzleCheckParams } from "@/types";
 
 const guessCheckSchema = z.object({
     userId: z.string({

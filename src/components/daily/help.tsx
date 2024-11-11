@@ -10,7 +10,7 @@ function Help({ setShowHelp }: HelpProps) {
 
   return (
     <div
-      className='absolute inset-0 w-full h-full flex justify-center items-center'
+      className='absolute inset-0 w-full h-full flex justify-center items-center z-50'
     >
       <div className='bg-gray-300 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
       <div className='max-w-[730px] w-full h-full animate-slide-up border-t border-gray-light'>
