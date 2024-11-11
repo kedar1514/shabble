@@ -5,7 +5,6 @@ import { FaHeart, FaQuestion } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
 import { RiStarSFill } from "react-icons/ri";
 import { Icons, Title, Board, Button, Text, Confetti } from '@/components';
-import { getHint, checkGuess } from '@/api/daily-api';
 import { MAX_HINTS } from '@/constants';
 import { useGameSettings } from '@/hooks';
 import Help from './help'
@@ -13,37 +12,17 @@ import Help from './help'
 
 function Daily() {
 
-    const { settings, updateSettings } = useGameSettings();
+    const { settings, updateSettings, takeHint, makeGuess, updateGuess } = useGameSettings();
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
     const [showHelp, setShowHelp] = useState<boolean>(true);
-    // const [statistics, setStatistics] = useState<{
-    //     played: number;
-    //     totalStars: number;
-    //     currentStreak: number;
-    //     bestStreak: number;
-    //     starDistribution: number[]
-    // }>({
-    //     played: 0,
-    //     totalStars: 0,
-    //     currentStreak: 0,
-    //     bestStreak: 0,
-    //     starDistribution: Array(STAR_COUNT + 1).fill(0)
-    // });
-    console.log("Settings inside daily", settings)
-    // if (settings.hints >= MAX_HINTS[settings.boardSize] && settings.gameStatus === "playing") {
-    //     setGameStatus("lost");
-    // }
-    // if(settings.gameStatus === "won" && settings.guess !== settings.board) {
-    //     setGuess(settings.board);
-    // }
 
     const handleTileClick = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
-
         if (settings.gameStatus === "guessing") {
             handleGuessingMode(x, y);
-        }
-        else {
-            handlePlayingMode(x, y, setIsLoading);
+        } else {
+            setIsLoading(true);
+            await takeHint(x, y);
+            setIsLoading(false);
         }
     }
 
@@ -57,56 +36,24 @@ function Daily() {
         }
     }
 
-    const handlePlayingMode = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
-        if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return;
-        setIsLoading(true);
-        try {
-            const data = await getHint(settings.puzzleId, x, y);
-            const newBoard = [...settings.board];
-            newBoard[x][y] = data.adjacentCount.toString();
-            updateSettings({ hints: data.hintCount, board: newBoard });
-        } catch (error) {
-            console.error('Error fetching hint:', error);
-        }
-        setIsLoading(false);
-    }
-
-    const updateGuess = (x: number, y: number, value: string) => {
-        const newGuess = [...settings.guess];
-        newGuess[x][y] = value;
-        updateSettings({ guess: newGuess });
-    }
-
     const handleSubmitButton = async () => {
         switch (settings.gameStatus) {
             case "won":
             case "lost":
                 break;
             case "guessing":
-                try {
-                    updateSettings({ gameStatus: "guess-loading" });
-                    const [response,] = await Promise.all([
-                        checkGuess(settings.puzzleId, settings.guess, settings.hints),
-                        new Promise(resolve => setTimeout(resolve, 2000))
-                    ]);
-                    const gameWon = response.isCorrect;
-                    console.log("gameWon", gameWon);
-                    if (gameWon) {
-                        // setGameStatus("won");
-                        updateSettings({ board: settings.guess, gameStatus: "won", stars: response.stars });
-                        Confetti()
-                        break;
-                    }
+                const result = await makeGuess();
+                if (result.won) {
+                    Confetti();
+                } else if (result.won === false && result.success) {
                     setIncorrectGuess(true);
                     setTimeout(() => {
                         setIncorrectGuess(false);
-                        updateSettings({ guess: Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')), guessTileCount: 0 });
+                        updateSettings({ 
+                            guess: Array.from({ length: settings.boardSize }, () => Array(settings.boardSize).fill('')),
+                            guessTileCount: 0
+                        });
                     }, 1000);
-                    updateSettings({ hints: response.hintCount, gameStatus: response.gameStatus });
-                    // if (settings.hints >= MAX_HINTS[settings.boardSize]) setGameStatus("lost");
-                    // else setGameStatus("playing");
-                } catch (error) {
-                    console.error('Error checking settings.guess:', error);
                 }
                 break;
             case "playing":

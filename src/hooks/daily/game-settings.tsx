@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getGameStatus } from '@/api/daily-api';
+import { checkGuess, getGameStatus, getHint } from '@/api/daily-api';
 import { DEFAULT_BOARD_SIZE, MAX_HINTS } from '@/constants';
 import { GameStatusResponse } from '@/types';
 import { coordinatesToBoard } from '@/lib';
@@ -66,10 +66,63 @@ export function useGameSettings() {
     setSettings(prev => ({ ...prev, ...updates }));
   };
 
+  const takeHint = async (x: number, y: number) => {
+    if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return;
+    
+    try {
+      const data = await getHint(settings.puzzleId, x, y);
+      const newBoard = [...settings.board];
+      newBoard[x][y] = data.adjacentCount.toString();
+      updateSettings({ hints: data.hintCount, board: newBoard });
+      return true;
+    } catch (error) {
+      console.error('Error fetching hint:', error);
+      return false;
+    }
+  };
+
+  const makeGuess = async () => {
+    try {
+      updateSettings({ gameStatus: "guess-loading" });
+      const [response,] = await Promise.all([
+        checkGuess(settings.puzzleId, settings.guess, settings.hints),
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]);
+
+      if (response.isCorrect) {
+        updateSettings({ 
+          board: settings.guess, 
+          gameStatus: "won", 
+          stars: response.stars 
+        });
+        return { success: true, won: true };
+      }
+
+      updateSettings({ 
+        hints: response.hintCount, 
+        gameStatus: response.gameStatus,
+      });
+      
+      return { success: true, won: false };
+    } catch (error) {
+      console.error('Error checking guess:', error);
+      return { success: false, won: false };
+    }
+  };
+
+  const updateGuess = (x: number, y: number, value: string) => {
+    const newGuess = [...settings.guess];
+    newGuess[x][y] = value;
+    updateSettings({ guess: newGuess });
+  };
+
 
   return {
     settings,
     updateSettings,
+    takeHint,
+    makeGuess,
+    updateGuess,
     isLoading,
     error
   };
