@@ -62,7 +62,7 @@ const Menu: React.FC<MenuProps> = ({
                         <Title title="MENU" className='!text-md' />
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
+                            className="p-2 hover:bg-gray-100 rounded-full"
                         >
                             <IoClose size={24} />
                         </button>
@@ -83,7 +83,7 @@ const Menu: React.FC<MenuProps> = ({
                                 <Divider isVertical={false} className='my-4' />
 
                                 {menuItems.map((item, index) => (
-                                    <div className='flex gap-1 items-center hover:bg-white dark:hover:bg-gray-700 rounded cursor-pointer' onClick={item.onClick} key={index}>
+                                    <div className='flex gap-1 items-center hover:bg-white rounded cursor-pointer' onClick={item.onClick} key={index}>
                                         <div className='pl-3'>{item.icon && <item.icon size={30} />}</div>
                                         <div
                                             className="w-full text-left p-3 text-[25px] uppercase rounded text-[20px] font-bold"
