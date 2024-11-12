@@ -19,7 +19,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json<GameStatusResponse>(status);
     } catch (error) {
-        console.error("Error fetching settings:", error);
-        return NextResponse.json({ error: "Error fetching settings" }, { status: 500 });
+        console.error("Error fetching status:", error);
+        return NextResponse.json({ error: "Error fetching status" }, { status: 500 });
     }
 }

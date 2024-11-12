@@ -8,6 +8,7 @@ import { getStatistics, incrementPlayedCount, updateStars, updateStreak } from "
 
 export const getUserProgress = async (userId: string, puzzleId: number): Promise<UserProgress> => {
     try {
+        console.log("parameters in get user progress", userId, puzzleId)
         let userProgress;
         userProgress = await prisma.userProgress.findUnique({
             where: { userId_puzzleId: { userId, puzzleId } }
@@ -61,12 +62,12 @@ export const updateUserProgress = async ({ userId, puzzleId, boardSize, hint, st
             const updatedHintCount = userProgress.hintCount + 2;
             if (updatedHintCount > MAX_HINTS[boardSize as keyof typeof MAX_HINTS]) {
                 userProgress.status = 'lost';
+                await Promise.all([
+                    updateStreak(userId, false),
+                    updateStars(userId, 0)
+                ]);
             }
             userProgress.hintCount = Math.min(updatedHintCount, MAX_HINTS[boardSize as keyof typeof MAX_HINTS]);
-            await Promise.all([
-                updateStreak(userId, false),
-                updateStars(userId, 0)
-            ]);
 
         }
         console.log("userProgress in updateUserProgress after", userProgress);
@@ -90,6 +91,7 @@ export const updateUserProgress = async ({ userId, puzzleId, boardSize, hint, st
 export const getGameStatus = async (date: string, boardSize: number, userId: string): Promise<GameStatusResponse> => {
     try {
         const currentBoard = await getCurrentBoard({ date, boardSize });
+        console.log("currentBoard in getGameStatus", currentBoard);
         const userProgress = await prisma.userProgress.findUnique({
             where: { userId_puzzleId: { userId, puzzleId: currentBoard.id } }
         });

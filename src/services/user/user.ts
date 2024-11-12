@@ -1,6 +1,6 @@
 import { MAX_STARS } from "@/constants";
 import { prisma } from "@/lib";
-import { Statistics } from "@/types";
+import { StatisticsProps } from "@/types";
 import crypto from 'crypto';
 
 export const createUser = async (): Promise<string> => {
@@ -16,13 +16,13 @@ export const createUser = async (): Promise<string> => {
     }
 }
 
-export const getStatistics = async (userId: string): Promise<Statistics> => {
+export const getStatistics = async (userId: string): Promise<StatisticsProps> => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { played: true, totalStars: true, currentStreak: true, bestStreak: true, starDistribution: true }
         });
-        const statistics: Statistics = {
+        const statistics: StatisticsProps = {
             played: user?.played || 0,
             totalStars: user?.totalStars || 0,
             currentStreak: user?.currentStreak || 0,

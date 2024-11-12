@@ -4,7 +4,7 @@ import axios, {
     AxiosError,
     InternalAxiosRequestConfig,
   } from "axios";
-  import { getUserId } from "@/api/user";
+  // import { getUserId } from "@/api/user";
   import { envConfig } from "@/lib/config/envConfig";
 
   const createAxiosInstance = (
@@ -24,8 +24,10 @@ import axios, {
       instance.interceptors.request.use(
         async (config: InternalAxiosRequestConfig) => {
           try {
-            const userId = await getUserId();
-            config.headers.set("userId", userId);
+            const userId = localStorage.getItem("userId");
+            if (userId) {
+                config.headers.set("userId", userId);
+            }
           } catch (error) {
             console.error("Failed to get userId:", error);
           }
@@ -33,6 +35,18 @@ import axios, {
         },
         (error: AxiosError) => Promise.reject(error)
       );
+
+      instance.interceptors.response.use(
+        (response) => {
+            const newUserId = response.headers['x-user-id'];
+            console.log("newUserId in response", newUserId)
+            if (newUserId) {
+                localStorage.setItem("userId", newUserId);
+            }
+            return response;
+        },
+        (error: AxiosError) => Promise.reject(error)
+    );
     }
   
     return instance;

@@ -15,7 +15,7 @@ datasource db {
 
 model DailyPuzzle {
   id           Int            @id @default(autoincrement())
-  date         DateTime       @unique @db.Date
+  date         DateTime       @db.Date
   board        Json
   boardSize    Int
   createdAt    DateTime       @default(now())

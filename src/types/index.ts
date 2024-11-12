@@ -5,9 +5,8 @@ export type {
 } from "./api/daily-api";
 
 export type {
-    PuzzleCheckParams
-} from "./puzzle/puzzle";
-
-export type {
-    Statistics
+    PuzzleCheckParams,
+    GameState,
+    StatisticsProps,
+    GameSettings
 } from "./puzzle/puzzle";

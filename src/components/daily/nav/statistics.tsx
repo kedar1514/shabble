@@ -1,5 +1,5 @@
 import React from 'react'
-import Title from '../ui/title/title';
+import { Title } from '@/components'
 
 // Subcomponents
 const StatBox = ({ label, value }: { label: string; value: number }) => (
@@ -18,14 +18,14 @@ const StarBar = ({ stars, value, maxValue }: { stars: number; value: number; max
   
   return (
     <div className="flex items-center gap-2 mb-2">
-      <div className="w-8 flex items-center">
+      <div className="w-8 flex items-center justify-center">
         {stars === 0 ? '✕' : `${stars}`}
         {stars > 0 && <span className="text-yellow-500 ml-1">★</span>}
       </div>
       <div className="flex-1 h-8 bg-gray-100 rounded-sm overflow-hidden">
         {value > 0 && (
           <div 
-            className="h-full bg-green-500 transition-all duration-500"
+            className={`h-full ${stars === 0 ? 'bg-red-400' : 'bg-green-500'} transition-all duration-500`}
             style={{ width: `${percentage}%` }}
           />
         )}
@@ -49,12 +49,12 @@ interface StatisticsProps {
 }
 
 function Statistics({ statistics, setShowStatistics }: StatisticsProps) {
-  const maxDistribution = Math.max(...statistics.starDistribution)
+  const maxDistribution = statistics.starDistribution.reduce((acc, curr) => acc + curr, 0)
 
   const playerId = localStorage.getItem("userId")
   return (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center" 
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10000]" 
       onClick={() => setShowStatistics(false)}
     >
       <div 
@@ -104,4 +104,4 @@ function Statistics({ statistics, setShowStatistics }: StatisticsProps) {
   )
 }
 
-export default Statistics
+export { Statistics }

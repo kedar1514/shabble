@@ -1,3 +1,3 @@
 import { useGameSettings } from './daily/game-settings';
-
-export { useGameSettings };
+import { useGameLogic } from './daily/game-logic';
+export { useGameSettings, useGameLogic };

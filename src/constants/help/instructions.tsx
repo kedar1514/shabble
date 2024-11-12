@@ -62,6 +62,9 @@ export const instructions: readonly (string | JSX.Element)[][] = [
         </>,
         <>
             You will earn a star for every hint you have remaining once the <span className="font-bold">SHABBLE</span> is solved ⭐
+        </>,
+        <>
+            Everyday is a new shape!
         </>
     ],
     [
@@ -127,13 +130,13 @@ export const instructions: readonly (string | JSX.Element)[][] = [
     ],
     [
         <>
-            Inspired from <a href="https://wafflegame.net/daily" className='text-green-600 font-bold'>Waffle</a> and <a href="https://minesweeper.online/" className='text-green-600 font-bold'>Minesweeper</a>
+            Inspired from <a href="https://wafflegame.net/daily" className='text-green-600 font-bold' target="_blank" rel="noopener noreferrer">Waffle</a> and <a href="https://minesweeper.online/" className='text-green-600 font-bold' target="_blank" rel="noopener noreferrer">Minesweeper</a>
         </>,
         <>
-            Made with ❤️ by <a href="https://github.com/coder-zs-cse/" className='text-green-600 font-bold'>Zubin Shah</a>
+            Made with ❤️ by <a href="https://github.com/coder-zs-cse/" className='text-green-600 font-bold' target="_blank" rel="noopener noreferrer">Zubin Shah</a>
         </>,
         <>
-            Buy me a <a href="https://getmechai.vercel.app/link.html?vpa=www.zubinshah1886@okaxis&nm=ZubinShah&amt=100" className='text-green-600 font-bold'>{" "}chai ☕</a>
+            Buy me a <a href="https://getmechai.vercel.app/link.html?vpa=www.zubinshah1886@okaxis&nm=ZubinShah&amt=100" className='text-green-600 font-bold' target="_blank" rel="noopener noreferrer">{" "}chai ☕</a>
         </>
     ]
 ] as const;

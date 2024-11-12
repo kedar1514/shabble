@@ -1,4 +1,4 @@
-import { Statistics } from "../puzzle/puzzle";
+import { StatisticsProps } from "../puzzle/puzzle";
 
 export interface GameStatusResponse {
     hintCoordinates: { x: number, y: number, c: number }[];
@@ -26,5 +26,5 @@ export interface checkGuessResponse {
     hintCount: number;
     gameStatus: "playing" | "won" | "lost";
     stars?: number;
-    statistics: Statistics;
+    statistics: StatisticsProps;
 }

@@ -10,9 +10,9 @@ function Help({ setShowHelp }: HelpProps) {
 
   return (
     <div
-      className='absolute inset-0 w-full h-full flex justify-center items-center z-50'
+      className='fixed inset-0 w-full h-full flex justify-center items-center z-50'
     >
-      <div className='bg-gray-300 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
+      <div className='bg-black/50 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
       <div className='max-w-[730px] w-full h-full animate-slide-up border-t border-gray-light'>
         <div className='h-[72px] opacity-0 debug' onClick={() => setShowHelp(false)} />
         <div className='h-[calc(100%-72px)] bg-white'>
@@ -44,10 +44,10 @@ function Help({ setShowHelp }: HelpProps) {
           </div>
         </div>
       </div>
-      <div className='bg-gray-300 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
+      <div className='bg-black/50 flex-1 h-full' onClick={() => setShowHelp(false)}></div>
 
     </div>
   )
 }
 
-export default Help
+export { Help }
