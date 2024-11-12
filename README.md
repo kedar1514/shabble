@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shabble - Daily Shape Guessing Puzzle Game
+### A fun and challenging daily puzzle game where you guess the hidden shape.
 
 ## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Prerequisites
+- Node.js and npm (or pnpm): Ensure you have Node.js and npm (or pnpm) installed on your system. You can download them from the official Node.js website.
+### Installation
+- Clone the Repository:
+```
+git clone https://github.com/your-username/Shabble.git
+cd Shabble
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Set Up Environment Variables:
+- Rename the .env.example file to .env.
+- Update the POSTGRES_URL variable in the .env file with your PostgreSQL database connection string.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Install Dependencies:
+```
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Run Database Migrations:
+```
+pnpm run prisma:migrate
+```
 
-## Learn More
+### Start the Development Server:
+```
+pnpm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Access the Game: Open your web browser and navigate to ```http://localhost:3000``` to play the game.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Snapshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<img src="https://github.com/user-attachments/assets/4db18650-b6b8-48c4-9362-a6d7b044498c" width="500" height="619" alt="Shabble Gameplay Screenshot">
 
-## Deploy on Vercel
+<img src="https://github.com/user-attachments/assets/75973585-c52a-44c1-b68b-7157f215771c" width="500" height="619" alt="Shabble Second Gameplay Screenshot">
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<img src="https://github.com/user-attachments/assets/76fc3e73-4f63-4f6b-b566-83e5fe298c7e" width="500" height="619" alt="Shabble Third Gameplay Screenshot">
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<img src="https://github.com/user-attachments/assets/bab843d3-47e1-4c1d-8135-2c3e651291d9" width="500" height="619" alt="Shabble Fourth Gameplay Screenshot">
+
+<img src="https://github.com/user-attachments/assets/be5c8567-c58e-4991-98b7-7a37de910508" width="500" height="619" alt="Shabble Fifth Gameplay Screenshot">
+
+<img src="https://github.com/user-attachments/assets/f20ba887-738c-4cbd-9be2-167a3d2f2d14" width="500" height="619" alt="Shabble Sixth Gameplay Screenshot">
+
+### Easy Level & Hard Level 
+
+<img src="https://github.com/user-attachments/assets/8cc9867f-cae3-4b15-afb6-be5b52b8ea75" width="500" height="619" alt="Shabble Easy Level Gameplay Screenshot">
+
+
+<img src="https://github.com/user-attachments/assets/0c880d10-e13f-4777-8285-7b815b9e9006" width="500" height="619" alt="Shabble Hard Level Gameplay Screenshot">
