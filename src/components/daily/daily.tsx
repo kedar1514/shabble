@@ -22,13 +22,13 @@ function Daily() {
         setShowStatistics
     } = useGameLogic();
 
-    if (isLoading) {
-        return (
-            <div className='flex items-center justify-center w-full h-full'>
-                <Loader />
-            </div>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <div className='flex items-center justify-center w-full h-full'>
+    //             <Loader />
+    //         </div>
+    //     );
+    // }
 
     console.log("settings in daily", settings)
     return (
@@ -40,9 +40,13 @@ function Daily() {
                 setShowStatistics={setShowStatistics}
                 statistics={settings.statistics}
             />
-            
-            <div className='flex flex-col items-center w-full h-full overflow-auto hide-scrollbar'>
-                <div className='flex-1 w-full h-full' />
+            {isLoading ? 
+             <div className='flex items-center justify-center w-full h-full'>
+                <Loader />
+            </div>
+            : (
+                <div className='flex flex-col items-center w-full h-full overflow-auto hide-scrollbar'>
+                    <div className='flex-1 w-full h-full' />
                 <div className='flex flex-col items-center w-full space-y-4 z-10'>
                     <GameStatus 
                         date={settings.date}
@@ -67,8 +71,9 @@ function Daily() {
                         />
                     )}
                 </div>
-                <div className='flex-1 w-full h-full' />
-            </div>
+                    <div className='flex-1 w-full h-full' />
+                </div>
+            )}
         </div>
     )
 }

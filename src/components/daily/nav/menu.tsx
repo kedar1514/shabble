@@ -1,8 +1,8 @@
 'use client'
 import { Divider, Title } from '@/components'
-import React, { useState } from 'react'
+import React from 'react'
 import { FaHeart, FaQuestion } from 'react-icons/fa'
-import { IoClose, IoHelpCircle } from 'react-icons/io5'
+import { IoClose } from 'react-icons/io5'
 import { MdLeaderboard } from 'react-icons/md'
 
 interface MenuProps {

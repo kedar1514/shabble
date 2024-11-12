@@ -17,7 +17,7 @@ interface GameHeaderProps {
 }
 export function GameHeader({ showHelp, showStatistics, setShowHelp, setShowStatistics, statistics }: GameHeaderProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { settings, updateSettings } = useGameSettings();
+    const { updateSettings } = useGameSettings();
 
     const handleDifficultySelect = (size: number) => {
         updateSettings({ boardSize: size as 5 | 6 | 7 });

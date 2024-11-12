@@ -9,6 +9,9 @@ export function useGameLogic() {
     const [showStatistics, setShowStatistics] = useState<boolean>(false);
 
     const handleTileClick = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
+        if(settings.gameStatus === "won" || settings.gameStatus === "lost") {
+            return;
+        }
         if (settings.gameStatus === "guessing") {
             handleGuessingMode(x, y);
         } else {
