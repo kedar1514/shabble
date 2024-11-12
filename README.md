@@ -7,7 +7,7 @@
 ### Installation
 - Clone the Repository:
 ```
-git clone https://github.com/your-username/Shabble.git
+git clone https://github.com/coder-zs-cse/Shabble.git
 cd Shabble
 ```
 
