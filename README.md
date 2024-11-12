@@ -22,12 +22,12 @@ pnpm install
 
 ### Run Database Migrations:
 ```
-pnpm run prisma:migrate
+npm run prisma:migrate
 ```
 
 ### Start the Development Server:
 ```
-pnpm run dev
+npm run dev
 ```
 
 Access the Game: Open your web browser and navigate to ```http://localhost:3000``` to play the game.
