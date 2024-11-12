@@ -13,6 +13,7 @@ interface GameSettingsContextType {
     takeHint: (x: number, y: number) => Promise<boolean>;
     makeGuess: () => Promise<{ success: boolean; won: boolean; }>;
     updateGuess: (x: number, y: number, value: string) => void;
+    loadingCoordinates: { x: number; y: number } | undefined;
 }
 
 const GameSettingsContext = createContext<GameSettingsContextType | undefined>(undefined);
@@ -36,6 +37,7 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
             starDistribution: Array(MAX_STARS + 1).fill(0)
         }
     });
+    const [loadingCoordinates, setLoadingCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -80,8 +82,9 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
 
     const takeHint = async (x: number, y: number): Promise<boolean> => {
         if (settings.board[x][y] !== '' || settings.hints >= MAX_HINTS[settings.boardSize]) return false;
-
+        if(settings.gameStatus === "tile-loading") return false;
         try {
+            setLoadingCoordinates({ x, y });
             updateSettings({ hints: settings.hints + 1 });
             const data = await getHint(settings.puzzleId, x, y);
             const newBoard = [...settings.board];
@@ -92,6 +95,8 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
             console.error('Error fetching hint:', error);
             updateSettings({ hints: settings.hints - 1 });
             return false;
+        } finally {
+            setLoadingCoordinates(undefined);
         }
     };
 
@@ -139,7 +144,8 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
         updateSettings,
         takeHint,
         makeGuess,
-        updateGuess
+        updateGuess,
+        loadingCoordinates
     };
 
     return (

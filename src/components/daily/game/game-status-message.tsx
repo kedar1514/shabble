@@ -9,6 +9,7 @@ export function GameStatusMessage() {
             case "won":
             case "lost":
             case "playing":
+            case "tile-loading":
                 if (settings.hints === 0 && settings.gameStatus !== "won") {
                     return <span className='text-[#a9abad] font-normal'>CLICK ANY TILE TO GET A HINT</span>
                 }

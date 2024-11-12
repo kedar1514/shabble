@@ -4,7 +4,7 @@ import React from 'react'
 interface BoardProps {
     board: string[][];
     guess: string[][];
-    onTileClick?: (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => void;
+    onTileClick?: (x: number, y: number) => Promise<void>;
     gameStatus?: string;
     incorrectGuess?: boolean;
     className?: string;
@@ -26,7 +26,7 @@ function Board({ board, guess, onTileClick, gameStatus, incorrectGuess, classNam
                         key={`${row}-${col}`}
                         tileContent={board[row][col]} 
                         guessContent={guess[row][col]}
-                        onClick={(setIsLoading) => onTileClick && onTileClick(row, col, setIsLoading)}
+                        onClick={async () => onTileClick && onTileClick(row, col)}
                         gameStatus={gameStatus}
                         incorrectGuess={incorrectGuess}
                         className={tileClassName}

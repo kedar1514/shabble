@@ -9,7 +9,7 @@ interface GameStatusProps {
     guess: string[][]
     gameStatus: GameState
     incorrectGuess: boolean
-    onTileClick: (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => void
+    onTileClick: (x: number, y: number) => Promise<void>
 }
 
 export function GameStatus({ 

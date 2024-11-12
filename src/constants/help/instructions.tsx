@@ -78,7 +78,6 @@ export const instructions: readonly (string | JSX.Element)[][] = [
                         <Board
                             board={shape}
                             guess={shape}
-                            onTileClick={() => { }}
                             gameStatus="guessing"
                             incorrectGuess={false}
                             className='!gap-0.5'
@@ -104,7 +103,6 @@ export const instructions: readonly (string | JSX.Element)[][] = [
                         key={index}
                         board={block}
                         guess={block}
-                        onTileClick={() => { }}
                         gameStatus={index === 0 ? "playing" : "guessing"}
                         incorrectGuess={false}
                         className='!w-[40%] md:!w-[20%] !gap-0.5'

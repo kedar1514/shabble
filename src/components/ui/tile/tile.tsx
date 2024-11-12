@@ -2,13 +2,13 @@
 import { TileLoader } from '@/components';
 import React, { useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { TILE_CORRECT_EMOJI } from '@/constants/daily/game-constants'; // avoids circular dependency
+import { TILE_CORRECT_EMOJI } from '@/constants/daily/game-constants'; // please do not change, it avoids circular dependency
 
 interface TileProps {
   className?: string;
   tileContent?: string;
   guessContent?: string;
-  onClick?: (setIsLoading: (isLoading: boolean) => void) => void;
+  onClick?: () => Promise<void>;
   gameStatus?: string;
   incorrectGuess?: boolean;
 }
@@ -18,6 +18,7 @@ const tile = tv({
   variants: {
     status: {
       "tile-empty": "bg-gray-200",
+      "tile-loading": "bg-yellow-400",
       "tile-filled": "bg-yellow-400",
       "guess-empty": "bg-green-200",
       "guess-filled": "bg-green-600",
@@ -32,6 +33,7 @@ const tile = tv({
 })
 
 function Tile({ className, tileContent, guessContent, onClick, gameStatus, incorrectGuess }: TileProps) {
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getTileStatus = () => {
@@ -42,23 +44,38 @@ function Tile({ className, tileContent, guessContent, onClick, gameStatus, incor
         if (guessContent) return "won";
       case "guessing":
         return guessContent ? "guess-filled" : "guess-empty";
+      case "tile-loading":
+        return isLoading ?  "tile-loading" : tileContent ? "tile-filled" : "tile-empty";
       default:
         if (incorrectGuess && guessContent) return "guess-incorrect";
-        return (tileContent || isLoading) ? "tile-filled" : "tile-empty";
+        return (tileContent) ? "tile-filled" : "tile-empty";
     }
+  };
+
+  const handleTileClick = async (): Promise<void> => {
+    setIsLoading(true);
+    if(onClick) await onClick()
+    setIsLoading(false);
+  }
+
+  const getTileContent = () => {
+    if (gameStatus === "won" && guessContent) return TILE_CORRECT_EMOJI;
+    if (gameStatus === "tile-loading") {
+      return tileContent ? tileContent : isLoading ? <TileLoader /> : '';
+    }
+    if (["playing", "lost"].includes(gameStatus || "") && tileContent) return tileContent;
+    return '';
   };
 
   return (
     <div
-      onClick={() => onClick && onClick(setIsLoading)}
+      onClick={handleTileClick}
       className={tile({
         status: getTileStatus(),
         className
       })}
     >
-      {gameStatus === "won" && guessContent ? TILE_CORRECT_EMOJI : ''}
-      {(gameStatus === "playing" || gameStatus === "lost") && tileContent ? tileContent : ''}
-      {isLoading && <TileLoader />}
+      {getTileContent()}
     </div>
   )
 }

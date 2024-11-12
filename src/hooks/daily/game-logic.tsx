@@ -3,21 +3,26 @@ import { useGameSettings } from '@/contexts'
 import { Confetti } from '@/components'
 
 export function useGameLogic() {
-    const { settings, updateSettings, takeHint, makeGuess, updateGuess } = useGameSettings();
+    const { settings, updateSettings, takeHint, makeGuess, updateGuess, loadingCoordinates } = useGameSettings();
     const [incorrectGuess, setIncorrectGuess] = useState<boolean>(false);
     const [showHelp, setShowHelp] = useState<boolean>(true);
     const [showStatistics, setShowStatistics] = useState<boolean>(false);
 
-    const handleTileClick = async (x: number, y: number, setIsLoading: (isLoading: boolean) => void) => {
+    const handleTileClick = async (x: number, y: number): Promise<void> => {
+        console.log("handleTileClick", settings.gameStatus)
         if(settings.gameStatus === "won" || settings.gameStatus === "lost") {
             return;
         }
         if (settings.gameStatus === "guessing") {
             handleGuessingMode(x, y);
         } else {
-            setIsLoading(true);
+            if(loadingCoordinates) return;
+            console.log("going to load tile")
+            updateSettings({ gameStatus: "tile-loading" });
+            console.log("loading tile")
             await takeHint(x, y);
-            setIsLoading(false);
+            console.log("loaded tile")
+            updateSettings({ gameStatus: "playing" });
         }
     }
 
