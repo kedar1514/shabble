@@ -93,7 +93,7 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
             return true;
         } catch (error) {
             console.error('Error fetching hint:', error);
-            updateSettings({ hints: settings.hints - 1 });
+            // updateSettings({ hints: settings.hints - 1 });
             return false;
         } finally {
             setLoadingCoordinates(undefined);
@@ -107,15 +107,18 @@ export function GameSettingsProvider({ children }: { children: React.ReactNode }
                 checkGuess(settings.puzzleId, settings.guess, settings.hints),
                 new Promise(resolve => setTimeout(resolve, 2000))
             ]);
-
-            if (response.isCorrect) {
-                updateSettings({
-                    board: settings.guess,
-                    gameStatus: "won",
-                    stars: response.stars,
-                    statistics: response.statistics
-                });
-                return { success: true, won: true };
+            
+            switch(response.gameStatus){
+                case "won":
+                    updateSettings({
+                        board: settings.guess,
+                        gameStatus: "won",
+                        stars: response.stars,
+                        statistics: response.statistics
+                    });
+                    return { success: true, won: true };
+                case "lost":
+                    break;
             }
 
             updateSettings({

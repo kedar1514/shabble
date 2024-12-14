@@ -9,9 +9,10 @@ import {
     GameResult,
 } from './game'
 import { useGameLogic } from '@/hooks'
+import { toast } from 'react-toastify'
 
 function Daily() {
-    const { settings, isLoading } = useGameSettings();
+    const { settings, isLoading, error } = useGameSettings();
     const {
         showHelp,
         showStatistics,
@@ -23,6 +24,9 @@ function Daily() {
     } = useGameLogic();
 
     console.log("settings in daily", settings)
+    if(error){
+        toast.error("Database is inactive, please ask developer to activate it");
+    }
     return (
         <div className='relative flex flex-col items-center w-full h-full overflow-hidden'>
             <GameHeader
