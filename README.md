@@ -7,7 +7,7 @@
 ### Installation
 - Clone the Repository:
 ```
-git clone https://github.com/your-username/Shabble.git
+git clone https://github.com/coder-zs-cse/Shabble.git
 cd Shabble
 ```
 
@@ -22,33 +22,35 @@ pnpm install
 
 ### Run Database Migrations:
 ```
-pnpm run prisma:migrate
+npm run prisma:migrate
 ```
 
 ### Start the Development Server:
 ```
-pnpm run dev
+npm run dev
 ```
 
 Access the Game: Open your web browser and navigate to ```http://localhost:3000``` to play the game.
 
 ### Snapshots
 
-<img src="https://github.com/user-attachments/assets/4db18650-b6b8-48c4-9362-a6d7b044498c" width="500" height="619" alt="Shabble Gameplay Screenshot">
 
-<img src="https://github.com/user-attachments/assets/75973585-c52a-44c1-b68b-7157f215771c" width="500" height="619" alt="Shabble Second Gameplay Screenshot">
+![Screenshot from 2024-11-12 21-26-05](https://github.com/user-attachments/assets/4db18650-b6b8-48c4-9362-a6d7b044498c)
 
-<img src="https://github.com/user-attachments/assets/76fc3e73-4f63-4f6b-b566-83e5fe298c7e" width="500" height="619" alt="Shabble Third Gameplay Screenshot">
+![Screenshot from 2024-11-12 21-27-22](https://github.com/user-attachments/assets/75973585-c52a-44c1-b68b-7157f215771c)
 
-<img src="https://github.com/user-attachments/assets/bab843d3-47e1-4c1d-8135-2c3e651291d9" width="500" height="619" alt="Shabble Fourth Gameplay Screenshot">
+![Screenshot from 2024-11-12 21-28-23](https://github.com/user-attachments/assets/76fc3e73-4f63-4f6b-b566-83e5fe298c7e)
 
-<img src="https://github.com/user-attachments/assets/be5c8567-c58e-4991-98b7-7a37de910508" width="500" height="619" alt="Shabble Fifth Gameplay Screenshot">
+![Screenshot from 2024-11-12 21-28-51](https://github.com/user-attachments/assets/bab843d3-47e1-4c1d-8135-2c3e651291d9)
 
-<img src="https://github.com/user-attachments/assets/f20ba887-738c-4cbd-9be2-167a3d2f2d14" width="500" height="619" alt="Shabble Sixth Gameplay Screenshot">
+![Screenshot from 2024-11-12 21-30-07](https://github.com/user-attachments/assets/be5c8567-c58e-4991-98b7-7a37de910508)
 
-### Easy Level & Hard Level 
+![Screenshot from 2024-11-12 21-30-27](https://github.com/user-attachments/assets/f20ba887-738c-4cbd-9be2-167a3d2f2d14)
 
-<img src="https://github.com/user-attachments/assets/8cc9867f-cae3-4b15-afb6-be5b52b8ea75" width="500" height="619" alt="Shabble Easy Level Gameplay Screenshot">
+### Easy Level
 
+![Screenshot from 2024-11-12 21-31-18](https://github.com/user-attachments/assets/8cc9867f-cae3-4b15-afb6-be5b52b8ea75)
 
-<img src="https://github.com/user-attachments/assets/0c880d10-e13f-4777-8285-7b815b9e9006" width="500" height="619" alt="Shabble Hard Level Gameplay Screenshot">
+### Hard Level
+
+![Screenshot from 2024-11-12 21-30-55](https://github.com/user-attachments/assets/0c880d10-e13f-4777-8285-7b815b9e9006)
