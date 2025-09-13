@@ -21,6 +21,12 @@ export default function RootLayout({
         <ToastContainer />
         {children}
       </body>
+      <script
+        defer
+        src="https://www.kenyt.ai/botapp/ChatbotUI/dist/js/bot-loader.js"
+        type="text/javascript"
+        data-bot="111651938"
+      ></script>
     </html>
   );
 }
