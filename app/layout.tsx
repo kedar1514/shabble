@@ -21,7 +21,7 @@ export default function RootLayout({
         <ToastContainer />
         {children}
       </body>
-      <script defer src="https://lark-actual-finally.ngrok-free.app/botapp/ChatbotUI/dist/js/bot-loader.js" type="text/javascript" data-bot="113711041"></script>
+      <script defer src="https://www.kenyt.ai/botapp/ChatbotUI/dist/js/bot-loader.js" type="text/javascript" data-bot="112709652"></script>
     </html>
   );
 }
