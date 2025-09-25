@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',    // This will look for the file in the public directory
   },
 };
-
+ // usa kenyt bot link
 export default function RootLayout({
   children,
 }: Readonly<{
